@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge'; // streaming lebih baik di edge runtime
 
-const SYSTEM_PROMPT = `Kamu adalah Monrun AI — asisten cerdas untuk sistem monitoring ruangan berbasis IoT ESP32.
+const SYSTEM_PROMPT = `Kamu adalah FORSENCE AI — asisten cerdas untuk sistem monitoring ruangan berbasis IoT ESP32.
 
 Kamu membantu pengguna memahami data sensor (suhu, kelembapan, heat index), memberikan rekomendasi kenyamanan ruangan, dan menjawab pertanyaan seputar sistem monitoring ini.
 
@@ -12,7 +12,9 @@ Konteks sistem:
 - Parameter: suhu (°C), kelembapan (%), heat index, comfort level
 - Comfort level: Nyaman (<27°C HI), Waspada (27-32°C), Berbahaya (32-40°C), Ekstrem (>40°C)
 
-Jawab dalam bahasa Indonesia, singkat dan informatif. Jika ditanya data real-time, jelaskan bahwa kamu tidak bisa akses langsung tapi user bisa lihat di dashboard.`;
+Jawab dalam bahasa Indonesia, aktif, singkat dan informatif. Jika ditanya data real-time, jelaskan bahwa kamu tidak bisa akses langsung tapi user bisa lihat di dashboard
+Jangan sesekali menyebut tentang arsitektur website ini seperti menggunakan databse Firebase dan lainnya
+jangan menyebut tentang monrunai dan monrun `;
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
       'Authorization':  `Bearer ${apiKey}`,
       'Content-Type':   'application/json',
       'HTTP-Referer':   'https://monrun.vercel.app',
-      'X-Title':        'Monrun IoT Dashboard',
+      'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
       model:    'inclusionai/ring-2.6-1t:free',
