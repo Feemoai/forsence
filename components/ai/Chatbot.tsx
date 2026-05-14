@@ -40,6 +40,27 @@ export function Chatbot() {
   const inputRef  = useRef<HTMLTextAreaElement>(null);
   const abortRef  = useRef<AbortController | null>(null);
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('forsence_chat_history');
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse chat history', e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('forsence_chat_history', JSON.stringify(messages));
+    } else {
+      localStorage.removeItem('forsence_chat_history');
+    }
+  }, [messages]);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streaming]);
