@@ -11,7 +11,7 @@ interface Message {
 
 const STARTERS = [
   'Apa itu heat index?',
-  'Suhu berapa yang nyaman untuk ruang kelas?',
+  'Suhu nyaman untuk ruang kelas?',
   'Kenapa kelembapan tinggi berbahaya?',
   'Bedanya ruangan A, B, C apa?',
 ];
@@ -36,9 +36,9 @@ export function Chatbot() {
   const [input,     setInput]     = useState('');
   const [streaming, setStreaming] = useState(false);
   const [error,     setError]     = useState<string | null>(null);
-  const bottomRef  = useRef<HTMLDivElement>(null);
-  const inputRef   = useRef<HTMLTextAreaElement>(null);
-  const abortRef   = useRef<AbortController | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef  = useRef<HTMLTextAreaElement>(null);
+  const abortRef  = useRef<AbortController | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -59,7 +59,6 @@ export function Chatbot() {
     ]);
     setInput('');
     setStreaming(true);
-
     abortRef.current = new AbortController();
 
     try {
@@ -72,9 +71,7 @@ export function Chatbot() {
         signal: abortRef.current.signal,
       });
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const reader  = res.body!.getReader();
       const decoder = new TextDecoder();
@@ -83,7 +80,6 @@ export function Chatbot() {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
         buffer = lines.pop() ?? '';
@@ -108,7 +104,6 @@ export function Chatbot() {
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') return;
       setError('Gagal terhubung ke AI. Coba lagi.');
-      // Hapus pesan assistant yang kosong
       setMessages((prev) => prev.filter((m) => m.id !== assistantId));
     } finally {
       setStreaming(false);
@@ -124,12 +119,6 @@ export function Chatbot() {
     }
   };
 
-  const clear = () => {
-    abortRef.current?.abort();
-    setMessages([]);
-    setError(null);
-  };
-
   return (
     <div className="flex flex-col h-full min-h-0">
 
@@ -141,12 +130,12 @@ export function Chatbot() {
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white">FORSENCE AI</h1>
-            <p className="text-[10px] text-white/30">Powered by OpenRouter · Ring 2.6 � FORSENCE</p>
+            <p className="text-[10px] text-white/30">Powered by OpenRouter</p>
           </div>
         </div>
         {messages.length > 0 && (
           <button
-            onClick={clear}
+            onClick={() => { abortRef.current?.abort(); setMessages([]); setError(null); }}
             className="p-2 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
@@ -156,8 +145,6 @@ export function Chatbot() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4 min-h-0">
-
-        {/* Welcome screen */}
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -187,7 +174,6 @@ export function Chatbot() {
           </motion.div>
         )}
 
-        {/* Chat messages */}
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
@@ -201,7 +187,6 @@ export function Chatbot() {
                   <Bot className="w-3.5 h-3.5 text-purple-400" />
                 </div>
               )}
-
               <div className={`max-w-[80%] md:max-w-[70%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                 msg.role === 'user'
                   ? 'bg-cyan-500/15 border border-cyan-500/20 text-white rounded-tr-sm'
@@ -212,7 +197,6 @@ export function Chatbot() {
                   : <span className="whitespace-pre-wrap">{msg.content}</span>
                 }
               </div>
-
               {msg.role === 'user' && (
                 <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-0.5">
                   <User className="w-3.5 h-3.5 text-cyan-400" />
@@ -222,14 +206,12 @@ export function Chatbot() {
           ))}
         </AnimatePresence>
 
-        {/* Error */}
         {error && (
           <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
             <AlertCircle className="w-4 h-4 shrink-0" />
             {error}
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
 
@@ -259,15 +241,12 @@ export function Chatbot() {
             disabled={!input.trim() || streaming}
             className="w-11 h-11 rounded-xl bg-purple-500/20 border border-purple-500/30
               flex items-center justify-center text-purple-400 shrink-0
-              hover:bg-purple-500/30 hover:border-purple-500/50 transition-all
-              disabled:opacity-30 disabled:cursor-not-allowed"
+              hover:bg-purple-500/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-[10px] text-white/15 mt-2 text-center">
-          Shift+Enter untuk baris baru · Enter untuk kirim
-        </p>
+        <p className="text-[10px] text-white/15 mt-2 text-center">Shift+Enter untuk baris baru</p>
       </div>
     </div>
   );
