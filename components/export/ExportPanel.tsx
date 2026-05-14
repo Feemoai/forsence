@@ -1,8 +1,8 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { Download, FileText, FileJson } from 'lucide-react';
+import { Download, FileText, FileJson, FileType } from 'lucide-react';
 import type { HistoryEntry, RoomId } from '@/types';
-import { downloadCSV, downloadJSON, filterByDateRange } from '@/lib/utils/export';
+import { downloadCSV, downloadJSON, downloadPDF, filterByDateRange } from '@/lib/utils/export';
 
 const ROOMS: Array<RoomId | 'ALL'> = ['ALL', 'A', 'B', 'C'];
 
@@ -22,7 +22,7 @@ export function ExportPanel({ history }: Props) {
     ),
   [history, room, from, to]);
 
-  const filename = `monrun_room${room}_${from||'all'}_${to||'now'}`;
+  const filename = `forsence_room${room}_${from||'all'}_${to||'now'}`;
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -87,26 +87,36 @@ export function ExportPanel({ history }: Props) {
         </div>
 
         {/* Export buttons */}
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => downloadCSV(filtered, `${filename}.csv`)}
             disabled={filtered.length === 0}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
+            className="flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 rounded-xl
               bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium
               hover:bg-emerald-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <FileText className="w-4 h-4" />
-            Export CSV
+            CSV
           </button>
           <button
             onClick={() => downloadJSON(filtered, `${filename}.json`)}
             disabled={filtered.length === 0}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
+            className="flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 rounded-xl
               bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium
               hover:bg-blue-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <FileJson className="w-4 h-4" />
-            Export JSON
+            JSON
+          </button>
+          <button
+            onClick={() => downloadPDF(filtered, `${filename}.pdf`)}
+            disabled={filtered.length === 0}
+            className="flex-1 min-w-[120px] flex items-center justify-center gap-2 py-2.5 rounded-xl
+              bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium
+              hover:bg-red-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <FileType className="w-4 h-4" />
+            PDF
           </button>
         </div>
       </div>

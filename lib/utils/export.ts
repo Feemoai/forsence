@@ -1,4 +1,6 @@
 import type { HistoryEntry, RoomId } from '@/types';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export function toCSV(data: HistoryEntry[]): string {
   const header = 'Timestamp,Room,Temperature (°C),Humidity (%),Heat Index (°C),Comfort\n';
@@ -26,6 +28,40 @@ export function downloadJSON(data: HistoryEntry[], filename = 'monitoring_data.j
   a.href = url; a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+export function downloadPDF(data: HistoryEntry[], filename = 'monitoring_data.pdf') {
+  const doc = new jsPDF();
+  
+  // Title
+  doc.setFontSize(18);
+  doc.text('FORSENCE - IoT Monitoring Report', 14, 22);
+  
+  // Meta Info
+  doc.setFontSize(11);
+  doc.setTextColor(100);
+  doc.text(`Exported on: ${new Date().toLocaleString('id-ID')}`, 14, 30);
+  doc.text(`Total Entries: ${data.length}`, 14, 36);
+  
+  const tableData = data.map(d => [
+    new Date(d.timestamp * 1000).toLocaleString('id-ID'),
+    `Room ${d.room}`,
+    `${d.temp}°C`,
+    `${d.humidity}%`,
+    `${d.heatIndex}°C`,
+    d.comfort
+  ]);
+
+  autoTable(doc, {
+    startY: 45,
+    head: [['Timestamp', 'Room', 'Temp', 'Humidity', 'Heat Index', 'Status']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [6, 182, 212] }, // cyan-500 equivalent
+    styles: { fontSize: 9 },
+  });
+
+  doc.save(filename);
 }
 
 export function filterByDateRange(
