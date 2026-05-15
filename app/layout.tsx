@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Sidebar }   from '@/components/layout/Sidebar';
 import { AppShell } from '@/components/AppShell';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </main>
           </div>
         </AppShell>
+        <Analytics />
       </body>
     </html>
   );
