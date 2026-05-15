@@ -88,3 +88,12 @@ export async function pushHistoryEntry(entry: HistoryEntry): Promise<void> {
 
   await push(ref(db, `${DEVICE_PATH}/history`), entry);
 }
+
+/**
+ * Hapus SEMUA data history dari Firebase.
+ * Berguna untuk membersihkan data jika sudah terlalu penuh.
+ */
+export async function clearAllHistory(): Promise<void> {
+  const { remove } = await import('firebase/database');
+  await remove(ref(db, `${DEVICE_PATH}/history`));
+}
