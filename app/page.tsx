@@ -4,9 +4,14 @@ import { useHistory }         from '@/lib/hooks/useHistory';
 import { WeatherHeader }      from '@/components/dashboard/WeatherHeader';
 import { DeviceStatusBar }    from '@/components/dashboard/DeviceStatusBar';
 import { RoomCard }           from '@/components/dashboard/RoomCard';
-import { ChartPanel }         from '@/components/dashboard/ChartPanel';
 import { InsightsPanel }      from '@/components/dashboard/InsightsPanel';
 import type { RoomId, HistoryEntry } from '@/types';
+import dynamic from 'next/dynamic';
+
+const ChartPanel = dynamic(() => import('@/components/dashboard/ChartPanel').then(m => m.ChartPanel), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-white/[0.04] rounded-2xl h-72" />
+});
 
 const ROOM_IDS: RoomId[] = ['A', 'B', 'C'];
 
@@ -94,10 +99,7 @@ export default function DashboardPage() {
       {/* ④ Chart + Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          {loading
-            ? <Skeleton className="h-72" />
-            : <ChartPanel history={history} />
-          }
+          {loading ? <Skeleton className="h-72" /> : <ChartPanel history={history} />}
         </div>
         <div>
           {loading

@@ -1,6 +1,4 @@
 import type { HistoryEntry, RoomId } from '@/types';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 export function toCSV(data: HistoryEntry[]): string {
   const header = 'Timestamp,Room,Temperature (°C),Humidity (%),Heat Index (°C),Comfort\n';
@@ -30,7 +28,11 @@ export function downloadJSON(data: HistoryEntry[], filename = 'monitoring_data.j
   URL.revokeObjectURL(url);
 }
 
-export function downloadPDF(data: HistoryEntry[], filename = 'monitoring_data.pdf') {
+export async function downloadPDF(data: HistoryEntry[], filename = 'monitoring_data.pdf') {
+  // Dynamic import agar tidak memberatkan bundle Next.js saat initial load
+  const { default: jsPDF } = await import('jspdf');
+  const { default: autoTable } = await import('jspdf-autotable');
+  
   const doc = new jsPDF();
   
   // Title
