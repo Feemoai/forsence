@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, Sparkles, Trash2, AlertCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useDevice } from '@/lib/hooks/useDevice';
 
 interface Message {
   id:      string;
@@ -41,6 +42,9 @@ export function Chatbot() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLTextAreaElement>(null);
   const abortRef  = useRef<AbortController | null>(null);
+  
+  // Ambil data real-time perangkat
+  const { data: deviceData } = useDevice();
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -90,6 +94,7 @@ export function Chatbot() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
           messages: [...messages, userMsg].map(({ role, content }) => ({ role, content })),
+          deviceData: deviceData // Kirim data real-time sebagai context
         }),
         signal: abortRef.current.signal,
       });
