@@ -90,10 +90,27 @@ export async function pushHistoryEntry(entry: HistoryEntry): Promise<void> {
 }
 
 /**
- * Hapus SEMUA data history dari Firebase.
- * Berguna untuk membersihkan data jika sudah terlalu penuh.
+ * Hapus data history dari Firebase, tapi sisakan 2 data terakhir per ruangan.
+ * (Agar grafik dan riwayat tidak kosong melompong)
  */
 export async function clearAllHistory(): Promise<void> {
-  const { remove } = await import('firebase/database');
-  await remove(ref(db, `${DEVICE_PATH}/history`));
+  const { ref, get, set, query, orderByChild, limitToLast } = await import('firebase/database');
+  
+  const rooms = ['A', 'B', 'C'];
+  const newHistory: Record<string, any> = { A: {}, B: {}, C: {} };
+  
+  for (const r of rooms) {
+    const q = query(
+      ref(db, `${DEVICE_PATH}/history/${r}`),
+      orderByChild('timestamp'),
+      limitToLast(2)
+    );
+    const snap = await get(q);
+    if (snap.exists()) {
+      newHistory[r] = snap.val();
+    }
+  }
+
+  // Timpa node history dengan data yang disisakan
+  await set(ref(db, `${DEVICE_PATH}/history`), newHistory);
 }

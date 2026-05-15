@@ -10,12 +10,21 @@ export default function HistoryPage() {
   const [clearing, setClearing] = useState(false);
 
   const handleClear = async () => {
-    if (!window.confirm('Yakin ingin menghapus SEMUA data history?\nTindakan ini tidak dapat dibatalkan.')) return;
+    const confirmText = window.prompt(
+      'Yakin ingin menghapus data history?\n(2 data terakhir tiap ruangan akan disisakan)\n\nKetik "DataFORSENCE" untuk mengonfirmasi penghapusan:'
+    );
+
+    if (confirmText !== 'DataFORSENCE') {
+      if (confirmText !== null) {
+        alert('Teks konfirmasi salah. Penghapusan dibatalkan.');
+      }
+      return;
+    }
     
     setClearing(true);
     try {
       await clearAllHistory();
-      alert('Data history berhasil dihapus!');
+      alert('Data history berhasil dihapus (disisakan 2 data terakhir per ruangan)!');
     } catch (err: any) {
       alert('Gagal menghapus: ' + err.message);
     } finally {
@@ -39,7 +48,7 @@ export default function HistoryPage() {
               text-red-400 border border-red-500/20 rounded-xl transition-all disabled:opacity-50 text-sm font-medium"
           >
             {clearing ? <span className="animate-spin text-lg leading-none">↻</span> : <Trash2 className="w-4 h-4" />}
-            {clearing ? 'Menghapus...' : 'Hapus Semua Data'}
+            {clearing ? 'Menghapus...' : 'Bersihkan Data History'}
           </button>
         )}
       </div>
