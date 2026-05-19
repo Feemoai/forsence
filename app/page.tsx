@@ -71,15 +71,23 @@ export default function DashboardPage() {
         {loading
           ? ROOM_IDS.map((id) => <Skeleton key={id} className="h-56" />)
           : data
-          ? ROOM_IDS.map((id) => {
+            ? ROOM_IDS.map((id) => {
               const meta = data.rooms?.[id];
-              // Gunakan rooms[id].latest untuk data per-room yang independen
-              // Fallback ke history terbaru jika latest belum ada
+              // Data dari metadata 'latest'
               const fromMeta = meta?.latest
                 ? ({ ...meta.latest, room: id } as HistoryEntry)
                 : undefined;
+              
+              // Data terbaru dari koleksi history
               const fromHistory = history.find((h) => h.room === id);
-              const latestEntry = fromMeta ?? fromHistory;
+              
+              // Pilih yang benar-benar terbaru berdasarkan timestamp
+              let latestEntry: HistoryEntry | undefined;
+              if (fromMeta && fromHistory) {
+                latestEntry = fromMeta.timestamp > fromHistory.timestamp ? fromMeta : fromHistory;
+              } else {
+                latestEntry = fromMeta ?? fromHistory;
+              }
 
               return (
                 <RoomCard
@@ -87,7 +95,6 @@ export default function DashboardPage() {
                   roomId={id}
                   meta={meta ?? { label: `Ruangan ${id}`, description: '', icon: 'school' }}
                   latest={latestEntry}
-                  // isActive driven oleh data.activeRoom (bukan data.latest.room)
                   isActive={data.activeRoom === id}
                 />
               );
