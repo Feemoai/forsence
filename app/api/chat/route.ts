@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
-      model:    'google/gemma-2-9b-it:free',
+      model:    'nvidia/nemotron-3-super-120b-a12b:free',
       messages: [
         { role: 'system', content: currentPrompt },
         ...messages,
