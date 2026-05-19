@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
-      model:    'inclusionai/ring-2.6-1t:free',
+      model:    'google/gemma-2-9b-it:free',
       messages: [
         { role: 'system', content: currentPrompt },
         ...messages,
