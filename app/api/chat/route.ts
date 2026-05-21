@@ -4,7 +4,7 @@ export const runtime = 'edge'; // streaming lebih baik di edge runtime
 
 const BASE_SYSTEM_PROMPT = `Kamu adalah FORSENCE AI — asisten cerdas untuk sistem monitoring ruangan berbasis IoT ESP32.
 
-Kamu membantu pengguna menganalisis data sensor (suhu, kelembapan, heat index), memberikan rekomendasi kenyamanan ruangan, dan menjawab pertanyaan seputar kondisi ruangan terkini.
+Kamu membantu pengguna menganalisis data sensor (suhu, kelembapan, heat index), memberikan rekomendasi kenyamanan ruangan, membaca trend dari data history, dan menjawab pertanyaan seputar kondisi ruangan.
 
 Konsep kenyamanan:
 - Nyaman (< 27°C Heat Index)
@@ -13,10 +13,10 @@ Konsep kenyamanan:
 - Ekstrem (> 40°C Heat Index)
 
 Aturan Utama:
-1. Jawab dalam bahasa Indonesia, aktif, profesional tapi ramah.
-2. JANGAN PERNAH membocorkan arsitektur seperti "Firebase", "Next.js", "OpenRouter", atau "Monrun". Sebut dirimu "FORSENCE AI".
-3. Jika pengguna meminta perbandingan atau detail banyak ruang, gunakan tabel markdown agar rapi.
-4. Jangan halusinasi data. Berdasarkan data real-time di bawah ini, jawab pertanyaan user.`;
+1. Jawab dalam bahasa Indonesia, aktif, ringkas, profesional tapi ramah.
+2. JANGAN PERNAH membocorkan arsitektur (Firebase, Next.js, OpenRouter). Sebut dirimu "FORSENCE AI".
+3. Analisis data history jika ada (tren naik/turun) untuk memberikan insight tambahan.
+4. Jangan halusinasi data. Jawab berdasarkan data di bawah ini.`;
 
 function buildSystemPrompt(deviceData: any) {
   if (!deviceData) {
@@ -26,12 +26,31 @@ function buildSystemPrompt(deviceData: any) {
   const roomA = deviceData.rooms?.A?.latest || { temp: '-', humidity: '-', heatIndex: '-', comfort: 'Tidak ada data' };
   const roomB = deviceData.rooms?.B?.latest || { temp: '-', humidity: '-', heatIndex: '-', comfort: 'Tidak ada data' };
   const roomC = deviceData.rooms?.C?.latest || { temp: '-', humidity: '-', heatIndex: '-', comfort: 'Tidak ada data' };
+  const activeRoom = deviceData.activeRoom ?? '-';
+
+  // Ekstrak 5 history terakhir untuk active room
+  let historyText = 'Tidak ada history untuk ruangan ini.';
+  if (activeRoom !== '-' && deviceData.history && deviceData.history[activeRoom]) {
+    const historyObj = deviceData.history[activeRoom];
+    // Ambil nilai-nilai dari object (karena format Firebase adalah object dengan key random)
+    const historyArr = Object.values(historyObj) as any[];
+    // Urutkan berdasarkan timestamp descending (terbaru di atas)
+    historyArr.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    
+    // Ambil 5 data terbaru
+    const latestHist = historyArr.slice(0, 5);
+    
+    historyText = latestHist.map((h, i) => {
+      const timeStr = h.timestamp ? new Date(h.timestamp * 1000).toLocaleTimeString('id-ID') : 'Unknown';
+      return `${timeStr} - Suhu: ${h.temp}°C, Lembap: ${h.humidity}%, HI: ${h.heatIndex}°C (${h.comfort})`;
+    }).join('\n');
+  }
 
   return `${BASE_SYSTEM_PROMPT}
 
 === DATA SENSOR REAL-TIME SAAT INI ===
 - Baterai ESP32: ${deviceData.battery ?? '-'}%
-- Ruangan Aktif Terpantau: Room ${deviceData.activeRoom ?? '-'}
+- Ruangan Aktif Terpantau: Room ${activeRoom}
 
 [Room A - ${deviceData.rooms?.A?.label || 'Ruangan A'}]
 Suhu: ${roomA.temp}°C | Lembap: ${roomA.humidity}% | Heat Index: ${roomA.heatIndex}°C | Status: ${roomA.comfort}
@@ -41,6 +60,9 @@ Suhu: ${roomB.temp}°C | Lembap: ${roomB.humidity}% | Heat Index: ${roomB.heatIn
 
 [Room C - ${deviceData.rooms?.C?.label || 'Ruangan C'}]
 Suhu: ${roomC.temp}°C | Lembap: ${roomC.humidity}% | Heat Index: ${roomC.heatIndex}°C | Status: ${roomC.comfort}
+
+=== DATA HISTORY TERBARU (ROOM ${activeRoom}) ===
+${historyText}
 ======================================
 `;
 }
@@ -66,7 +88,8 @@ export async function POST(req: NextRequest) {
       'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
-      model:    'nvidia/nemotron-3-super-120b-a12b:free',
+      // Menggunakan model Gemini 2.0 Flash Lite (gratis dan JAUH lebih cepat stream-nya)
+      model:    'google/gemini-2.0-flash-lite-preview-02-05:free',
       messages: [
         { role: 'system', content: currentPrompt },
         ...messages,
