@@ -88,8 +88,7 @@ export async function POST(req: NextRequest) {
       'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
-      // Menggunakan model Gemini 2.0 Flash Lite (gratis dan JAUH lebih cepat stream-nya)
-      model:    'google/gemini-2.0-flash-lite-preview-02-05:free',
+      model:    'openai/gpt-oss-120b:free',
       messages: [
         { role: 'system', content: currentPrompt },
         ...messages,
