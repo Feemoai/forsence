@@ -73,21 +73,27 @@ export default function DashboardPage() {
           : data
             ? ROOM_IDS.map((id) => {
               const meta = data.rooms?.[id];
-              // Data dari metadata 'latest'
+              // Sumber 1: Data dari rooms/{id}/latest (per-room)
               const fromMeta = meta?.latest
                 ? ({ ...meta.latest, room: id } as HistoryEntry)
                 : undefined;
               
-              // Data terbaru dari koleksi history
+              // Sumber 2: Data global latest (devices/esp1/latest) — hanya untuk room yang aktif
+              const deviceAny = data as unknown as Record<string, unknown>;
+              const globalLatest = (data.activeRoom === id && deviceAny.latest)
+                ? (deviceAny.latest as HistoryEntry)
+                : undefined;
+              
+              // Sumber 3: Data terbaru dari koleksi history
               const fromHistory = history.find((h) => h.room === id);
               
               // Pilih yang benar-benar terbaru berdasarkan timestamp
-              let latestEntry: HistoryEntry | undefined;
-              if (fromMeta && fromHistory) {
-                latestEntry = fromMeta.timestamp > fromHistory.timestamp ? fromMeta : fromHistory;
-              } else {
-                latestEntry = fromMeta ?? fromHistory;
-              }
+              const candidates = [fromMeta, globalLatest, fromHistory].filter(
+                (c): c is HistoryEntry => c != null && typeof c.timestamp === 'number'
+              );
+              const latestEntry = candidates.length > 0
+                ? candidates.reduce((a, b) => (a.timestamp > b.timestamp ? a : b))
+                : undefined;
 
               return (
                 <RoomCard

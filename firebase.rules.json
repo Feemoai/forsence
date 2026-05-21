@@ -6,8 +6,7 @@
         // ── READ: Siapapun boleh baca data (dashboard publik) ──────
         ".read": true,
 
-        // ── rooms: Hanya label/description/icon yang bisa diubah ──
-        // Data sensor (latest, history, weather) TIDAK bisa diubah dari browser
+        // ── rooms: label/description/icon + latest sensor per room ──
         "rooms": {
           "$roomId": {
             ".write": "$roomId === 'A' || $roomId === 'B' || $roomId === 'C'",
@@ -20,6 +19,16 @@
             },
             "icon": {
               ".validate": "newData.isString() && (newData.val() === 'school' || newData.val() === 'cpu' || newData.val() === 'flask')"
+            },
+            "latest": {
+              ".validate": "newData.hasChildren(['room', 'temp', 'humidity', 'heatIndex', 'comfort', 'timestamp'])",
+
+              "room":      { ".validate": "newData.isString() && (newData.val() === 'A' || newData.val() === 'B' || newData.val() === 'C')" },
+              "temp":      { ".validate": "newData.isNumber() && newData.val() >= -40 && newData.val() <= 80" },
+              "humidity":  { ".validate": "newData.isNumber() && newData.val() >= 0  && newData.val() <= 100" },
+              "heatIndex": { ".validate": "newData.isNumber()" },
+              "comfort":   { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
+              "timestamp": { ".validate": "newData.isNumber() && newData.val() > 0" }
             }
           }
         },
