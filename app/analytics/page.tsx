@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
     setAnalyzing(true);
     setError(null);
     try {
-      const res = await fetch('/api/ml/analyze', {
+      const res = await fetch('/api/python', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: history })

@@ -62,7 +62,7 @@ def kmeans_2d(data, k=3, iterations=10):
         
     return clusters
 
-@app.route('/api/ml/analyze', methods=['POST'])
+@app.route('/api/python', methods=['POST'])
 def analyze():
     try:
         data = request.json

@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV === 'development') {
       return [
         {
-          source: '/api/ml/:path*',
-          destination: 'http://127.0.0.1:5328/api/ml/:path*',
+          source: '/api/python/:path*',
+          destination: 'http://127.0.0.1:5328/api/python/:path*',
         },
       ];
     }
