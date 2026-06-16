@@ -28,7 +28,7 @@ interface MLData {
 }
 
 export default function AnalyticsPage() {
-  const { history, loading: historyLoading } = useHistory(250); // Fetch less for performance
+  const { history, loading: historyLoading } = useHistory(150); // Fetch even less for extreme mobile optimization
   const [analyzing, setAnalyzing] = useState(false);
   const [mlData, setMlData] = useState<MLData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -259,7 +259,8 @@ export default function AnalyticsPage() {
                     <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
                     <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
+                      isAnimationActive={false}
+                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
                       labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
                     />
                     <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
@@ -297,8 +298,9 @@ export default function AnalyticsPage() {
                     <YAxis dataKey="temp" domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
                     <ZAxis range={[60, 60]} />
                     <Tooltip 
+                      isAnimationActive={false}
                       cursor={{ strokeDasharray: '3 3' }}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                       labelFormatter={(l) => formatTime(Number(l))}
                     />
                     <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
@@ -336,8 +338,9 @@ export default function AnalyticsPage() {
                     <YAxis type="number" dataKey="humidity" name="Kelembapan" unit="%" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} tickMargin={10} />
                     <ZAxis range={[80, 80]} />
                     <Tooltip 
+                      isAnimationActive={false}
                       cursor={{ strokeDasharray: '3 3' }}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                     />
                     <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
                     <Scatter name="Profil Dingin" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#3b82f6" fillOpacity={0.8} isAnimationActive={false} />
