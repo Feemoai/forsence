@@ -26,6 +26,7 @@ export function useDevice() {
     return () => unsub();
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const isOnline =
     data?.lastSeen != null &&
     Date.now() / 1000 - data.lastSeen < ONLINE_THRESHOLD_SECONDS;

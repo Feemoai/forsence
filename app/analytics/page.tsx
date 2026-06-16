@@ -7,10 +7,29 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceArea, ScatterChart, Scatter, ZAxis
 } from 'recharts';
 
+interface MLRecord {
+  timestamp: number;
+  temp: number;
+  humidity: number;
+  is_anomaly: boolean;
+  cluster: number;
+}
+
+interface MLData {
+  metrics: {
+    average_temp: number;
+    max_temp: number;
+    min_temp: number;
+    anomalies_detected: number;
+  };
+  processed_data: MLRecord[];
+  forecast: { timestamp: number; predicted_temp: number }[];
+}
+
 export default function AnalyticsPage() {
   const { history, loading: historyLoading } = useHistory(200);
   const [analyzing, setAnalyzing] = useState(false);
-  const [mlData, setMlData] = useState<any>(null);
+  const [mlData, setMlData] = useState<MLData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
@@ -32,8 +51,12 @@ export default function AnalyticsPage() {
       if (!res.ok) throw new Error(data.error || "Gagal memproses data");
       
       setMlData(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan.");
+      }
     } finally {
       setAnalyzing(false);
     }
@@ -163,12 +186,12 @@ export default function AnalyticsPage() {
                     />
                     <Scatter 
                       name="Suhu Normal" 
-                      data={mlData.processed_data.filter((d: any) => !d.is_anomaly)} 
+                      data={mlData.processed_data.filter((d: MLRecord) => !d.is_anomaly)} 
                       fill="#22d3ee" fillOpacity={0.6}
                     />
                     <Scatter 
                       name="Terdeteksi Anomali" 
-                      data={mlData.processed_data.filter((d: any) => d.is_anomaly)} 
+                      data={mlData.processed_data.filter((d: MLRecord) => d.is_anomaly)} 
                       fill="#ef4444" 
                     />
                   </ScatterChart>
@@ -199,9 +222,9 @@ export default function AnalyticsPage() {
                       contentStyle={{ backgroundColor: '#070d1a', borderColor: '#ffffff20', borderRadius: '12px' }}
                     />
                     <Legend />
-                    <Scatter name="Profil Cuaca A" data={mlData.processed_data.filter((d: any) => d.cluster === 0)} fill="#a855f7" />
-                    <Scatter name="Profil Cuaca B" data={mlData.processed_data.filter((d: any) => d.cluster === 1)} fill="#34d399" />
-                    <Scatter name="Profil Cuaca C" data={mlData.processed_data.filter((d: any) => d.cluster === 2)} fill="#facc15" />
+                    <Scatter name="Profil Cuaca A" data={mlData.processed_data.filter((d: MLRecord) => d.cluster === 0)} fill="#a855f7" />
+                    <Scatter name="Profil Cuaca B" data={mlData.processed_data.filter((d: MLRecord) => d.cluster === 1)} fill="#34d399" />
+                    <Scatter name="Profil Cuaca C" data={mlData.processed_data.filter((d: MLRecord) => d.cluster === 2)} fill="#facc15" />
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
@@ -214,7 +237,7 @@ export default function AnalyticsPage() {
   );
 }
 
-function MetricCard({ title, value, icon: Icon, color }: any) {
+function MetricCard({ title, value, icon: Icon, color }: { title: string, value: string | number, icon: any, color: string }) {
   const colorMap: Record<string, string> = {
     cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
     red: 'text-red-400 bg-red-500/10 border-red-500/20',
