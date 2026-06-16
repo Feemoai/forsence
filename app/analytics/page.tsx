@@ -103,10 +103,11 @@ export default function AnalyticsPage() {
   return (
     <div className="p-3 md:p-6 space-y-6 md:space-y-8 pb-24">
       
-      {/* HEADER CONTROL PANEL (PREMIUM GLASSMORPHISM) */}
-      <div className="bg-[#0a101f]/80 border border-white/10 rounded-3xl p-5 md:p-8 backdrop-blur-xl relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 blur-[100px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none" />
+      {/* HEADER CONTROL PANEL */}
+      <div className="bg-[#0a101f] border border-white/10 rounded-3xl p-5 md:p-8 relative overflow-hidden shadow-xl">
+        {/* Simplified gradients instead of heavy blurs for low-end devices */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 rounded-full pointer-events-none" />
         
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
           <div className="space-y-6 w-full lg:w-auto">
@@ -240,9 +241,8 @@ export default function AnalyticsPage() {
           </div>
 
           {/* 1. FORECASTING */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-[2rem] opacity-20 group-hover:opacity-30 transition-opacity blur" />
-            <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8">
+          <div className="relative">
+            <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
@@ -265,11 +265,11 @@ export default function AnalyticsPage() {
                     <Legend wrapperStyle={{ paddingTop: '20px' }} />
                     <Line 
                       data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Valid (°C)" 
-                      stroke="#22d3ee" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: '#22d3ee', stroke: '#0a101f', strokeWidth: 3 }}
+                      stroke="#22d3ee" strokeWidth={2} dot={false} isAnimationActive={false}
                     />
                     <Line 
                       data={mlData.forecast} type="monotone" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)" 
-                      stroke="#a855f7" strokeWidth={3} strokeDasharray="6 6" dot={false} activeDot={{ r: 6, fill: '#a855f7', stroke: '#0a101f', strokeWidth: 3 }}
+                      stroke="#a855f7" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -281,7 +281,7 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
             
             {/* 2. ANOMALY DETECTION */}
-            <div className="bg-[#0a101f]/80 border border-white/10 rounded-[2rem] p-5 md:p-8 backdrop-blur-xl">
+            <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
               <div className="mb-6">
                 <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
                   <div className="p-2 bg-red-500/20 rounded-xl"><AlertTriangle className="w-5 h-5 text-red-400" /></div>
@@ -305,11 +305,13 @@ export default function AnalyticsPage() {
                       name="Suhu Normal" 
                       data={mlData.processed_data.filter((d) => !d.is_anomaly)} 
                       fill="#22d3ee" fillOpacity={0.6}
+                      isAnimationActive={false}
                     />
                     <Scatter 
                       name="Suhu Anomali" 
                       data={mlData.processed_data.filter((d) => d.is_anomaly)} 
                       fill="#ef4444" 
+                      isAnimationActive={false}
                     />
                   </ScatterChart>
                 </ResponsiveContainer>
@@ -317,7 +319,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* 3. CLUSTERING */}
-            <div className="bg-[#0a101f]/80 border border-white/10 rounded-[2rem] p-5 md:p-8 backdrop-blur-xl">
+            <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
               <div className="mb-6">
                 <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
                   <div className="p-2 bg-emerald-500/20 rounded-xl"><Activity className="w-5 h-5 text-emerald-400" /></div>
@@ -337,9 +339,9 @@ export default function AnalyticsPage() {
                       contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                     />
                     <Legend wrapperStyle={{ paddingTop: '10px' }} />
-                    <Scatter name="Profil Sejuk" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#a855f7" fillOpacity={0.8} />
-                    <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#34d399" fillOpacity={0.8} />
-                    <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#facc15" fillOpacity={0.8} />
+                    <Scatter name="Profil Sejuk" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#a855f7" fillOpacity={0.8} isAnimationActive={false} />
+                    <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#34d399" fillOpacity={0.8} isAnimationActive={false} />
+                    <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#facc15" fillOpacity={0.8} isAnimationActive={false} />
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
@@ -361,8 +363,8 @@ function MetricCard({ title, value, icon: Icon, color }: { title: string, value:
   };
 
   return (
-    <div className={`bg-[#0a101f]/80 p-5 rounded-[1.5rem] flex flex-col items-center text-center justify-center relative overflow-hidden group border ${colorMap[color]} backdrop-blur-md transition-transform hover:-translate-y-1`}>
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${colorMap[color].split(' shadow')[0]} rotate-3 group-hover:-rotate-3 transition-transform duration-300`}>
+    <div className={`bg-[#0a101f] p-5 rounded-[1.5rem] flex flex-col items-center text-center justify-center relative overflow-hidden border ${colorMap[color]}`}>
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${colorMap[color].split(' shadow')[0]}`}>
         <Icon className="w-6 h-6" />
       </div>
       <p className="text-xs font-semibold text-white/50 mb-1.5 uppercase tracking-wider">{title}</p>
