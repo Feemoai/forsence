@@ -28,7 +28,7 @@ interface MLData {
 }
 
 export default function AnalyticsPage() {
-  const { history, loading: historyLoading } = useHistory(150); // Fetch even less for extreme mobile optimization
+  const { history, loading: historyLoading } = useHistory(1000); // Fetch up to 1000 data points per room for comprehensive analysis
   const [analyzing, setAnalyzing] = useState(false);
   const [mlData, setMlData] = useState<MLData | null>(null);
   const [error, setError] = useState<string | null>(null);
