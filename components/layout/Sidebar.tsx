@@ -5,14 +5,15 @@ import { usePathname }   from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, History, Download,
-  Sparkles, Cpu, ChevronRight, Menu, X,
+  Sparkles, Cpu, ChevronRight, Activity, Menu, X
 } from 'lucide-react';
 
 const NAV = [
-  { href: '/',        label: 'Dashboard',    icon: LayoutDashboard },
-  { href: '/history', label: 'History',      icon: History         },
-  { href: '/export',  label: 'Export Data',  icon: Download        },
-  { href: '/ai',      label: 'FORSENCE AI',  icon: Sparkles        },
+  { href: '/',          label: 'Dashboard',    icon: LayoutDashboard },
+  { href: '/history',   label: 'History',      icon: History         },
+  { href: '/analytics', label: 'ML Analytics', icon: Activity        },
+  { href: '/export',    label: 'Export Data',  icon: Download        },
+  { href: '/ai',        label: 'FORSENCE AI',  icon: Sparkles        },
 ];
 
 // ── Isi nav (shared antara desktop & mobile drawer) ──────────────
