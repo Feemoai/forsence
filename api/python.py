@@ -76,9 +76,14 @@ def analyze():
         # Sort by timestamp
         records = sorted(records, key=lambda r: float(r.get('timestamp', 0)))
 
-        timestamps = [float(r['timestamp']) for r in records]
-        temps = [float(r['temp']) for r in records]
-        humidities = [float(r['humidity']) for r in records]
+        # Filter out floating sensor data (0 degrees or impossible temps)
+        valid_records = [r for r in records if float(r.get('temp', 0)) > 1.0]
+        if len(valid_records) < 5:
+            return jsonify({"error": "Not enough valid data points after filtering floating sensor errors (temp 0°C). Minimum 5 required."}), 400
+
+        timestamps = [float(r['timestamp']) for r in valid_records]
+        temps = [float(r['temp']) for r in valid_records]
+        humidities = [float(r['humidity']) for r in valid_records]
 
         # 1. Anomaly Detection (Z-Score)
         anomalies = z_score_anomaly(temps, threshold=2.0)
@@ -122,7 +127,7 @@ def analyze():
 
         # Prepare response
         processed_records = []
-        for i, r in enumerate(records):
+        for i, r in enumerate(valid_records):
             processed_records.append({
                 "timestamp": int(timestamps[i]),
                 "temp": float(temps[i]),
