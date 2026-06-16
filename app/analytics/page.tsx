@@ -97,7 +97,7 @@ export default function AnalyticsPage() {
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 flex items-center gap-3">
                 <BrainCircuit className="w-8 h-8 text-purple-400" />
-                FORSENCE AI Analytics
+                Data Analytic
               </h1>
               <p className="text-sm md:text-base text-white/50 mt-1.5 max-w-lg">
                 Jalankan model Machine Learning (Python) untuk mendeteksi anomali cuaca dan memprediksi tren suhu di ruangan.
@@ -165,7 +165,7 @@ export default function AnalyticsPage() {
             ) : (
               <Activity className="w-5 h-5 relative z-10" />
             )}
-            <span className="relative z-10">{analyzing ? "Menganalisis Data..." : "Run AI Analysis"}</span>
+            <span className="relative z-10">{analyzing ? "Menganalisis Data..." : "Start Analysis"}</span>
           </button>
         </div>
       </div>
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
             <BrainCircuit className="w-10 h-10 text-white/20" />
           </div>
           <h3 className="text-white font-medium text-lg mb-1">Siap Menganalisis {filteredHistory.length} Baris Data</h3>
-          <p className="text-white/40 text-sm text-center max-w-sm">Tentukan filter di atas lalu klik tombol "Run AI Analysis" untuk memproses data menggunakan algoritma Python.</p>
+          <p className="text-white/40 text-sm text-center max-w-sm">Tentukan filter di atas lalu klik tombol "Start Analysis" untuk memproses data menggunakan algoritma Python.</p>
         </motion.div>
       )}
 
