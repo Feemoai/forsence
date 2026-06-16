@@ -94,7 +94,7 @@ export default function AnalyticsPage() {
       )}
 
       {mlData && !analyzing && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
           
           {/* Metrics Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -104,45 +104,52 @@ export default function AnalyticsPage() {
             <MetricCard title="Rentang Data" value={`${mlData.processed_data.length} records`} icon={Calendar} color="emerald" />
           </div>
 
-          {/* Forecasting Line Chart */}
-          <div className="bg-[#0d1526] border border-white/5 rounded-2xl p-4 md:p-6">
+          {/* 1. Forecasting Category */}
+          <div>
             <div className="mb-4">
-              <h3 className="text-white font-medium">Suhu Historis vs Forecasting ML</h3>
-              <p className="text-xs text-white/40">Prediksi suhu beberapa jam ke depan menggunakan Linear Regression.</p>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-purple-400" />
+                1. Time-Series Forecasting
+              </h2>
+              <p className="text-sm text-white/50 mt-1">Prediksi regresi linear untuk memperkirakan suhu ruangan beberapa interval ke depan.</p>
             </div>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} />
-                  <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#070d1a', borderColor: '#ffffff20', borderRadius: '12px' }}
-                    labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
-                  />
-                  <Legend />
-                  <Line 
-                    data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Historis (°C)" 
-                    stroke="#22d3ee" strokeWidth={2} dot={false} 
-                  />
-                  <Line 
-                    data={mlData.forecast} type="dashed" dataKey="predicted_temp" name="Prediksi ML (°C)" 
-                    stroke="#a855f7" strokeWidth={2} strokeDasharray="5 5" dot={false} 
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="bg-[#0d1526] border border-white/5 rounded-2xl p-4 md:p-6">
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                    <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} />
+                    <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#070d1a', borderColor: '#ffffff20', borderRadius: '12px' }}
+                      labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
+                    />
+                    <Legend />
+                    <Line 
+                      data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Historis (°C)" 
+                      stroke="#22d3ee" strokeWidth={2} dot={false} 
+                    />
+                    <Line 
+                      data={mlData.forecast} type="dashed" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)" 
+                      stroke="#a855f7" strokeWidth={2} strokeDasharray="5 5" dot={false} 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
 
-          {/* Anomaly Bar Chart & Heatmap row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            {/* Anomaly Chart */}
+          {/* 2. Anomaly Detection Category */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                2. Anomaly Detection (Isolation Forest)
+              </h2>
+              <p className="text-sm text-white/50 mt-1">Mendeteksi anomali pada suhu menggunakan AI. Titik merah menandakan kejadian suhu yang tidak lazim secara statistik.</p>
+            </div>
             <div className="bg-[#0d1526] border border-white/5 rounded-2xl p-4 md:p-6">
-              <div className="mb-4">
-                <h3 className="text-white font-medium">Deteksi Anomali Suhu</h3>
-                <p className="text-xs text-white/40">Dideteksi menggunakan algoritma Isolation Forest.</p>
-              </div>
-              <div className="h-60">
+              <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
@@ -155,12 +162,12 @@ export default function AnalyticsPage() {
                       labelFormatter={(l) => formatTime(Number(l))}
                     />
                     <Scatter 
-                      name="Normal" 
+                      name="Suhu Normal" 
                       data={mlData.processed_data.filter((d: any) => !d.is_anomaly)} 
                       fill="#22d3ee" fillOpacity={0.6}
                     />
                     <Scatter 
-                      name="Anomali" 
+                      name="Terdeteksi Anomali" 
                       data={mlData.processed_data.filter((d: any) => d.is_anomaly)} 
                       fill="#ef4444" 
                     />
@@ -168,22 +175,34 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               </div>
             </div>
+          </div>
 
-            {/* Simple correlation / Distribution */}
+          {/* 3. Clustering Category */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Activity className="w-5 h-5 text-emerald-400" />
+                3. Profiling Ruangan (K-Means Clustering)
+              </h2>
+              <p className="text-sm text-white/50 mt-1">Mengelompokkan korelasi antara suhu dan kelembapan untuk melihat pola kenyamanan ruangan.</p>
+            </div>
             <div className="bg-[#0d1526] border border-white/5 rounded-2xl p-4 md:p-6">
-              <div className="mb-4">
-                <h3 className="text-white font-medium">Distribusi Kelembapan</h3>
-                <p className="text-xs text-white/40">Korelasi rentang kelembapan di seluruh ruangan.</p>
-              </div>
-              <div className="h-60">
+              <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={mlData.processed_data.slice(-20)} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                    <XAxis dataKey="timestamp" tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} />
-                    <YAxis stroke="#ffffff40" fontSize={12} />
-                    <Tooltip contentStyle={{ backgroundColor: '#070d1a', borderColor: '#ffffff20', borderRadius: '12px' }} />
-                    <Bar dataKey="humidity" name="Kelembapan (%)" fill="#34d399" radius={[4, 4, 0, 0]} />
-                  </BarChart>
+                  <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                    <XAxis type="number" dataKey="temp" name="Suhu" unit="°C" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} />
+                    <YAxis type="number" dataKey="humidity" name="Kelembapan" unit="%" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} />
+                    <ZAxis range={[60, 60]} />
+                    <Tooltip 
+                      cursor={{ strokeDasharray: '3 3' }}
+                      contentStyle={{ backgroundColor: '#070d1a', borderColor: '#ffffff20', borderRadius: '12px' }}
+                    />
+                    <Legend />
+                    <Scatter name="Profil Cuaca A" data={mlData.processed_data.filter((d: any) => d.cluster === 0)} fill="#a855f7" />
+                    <Scatter name="Profil Cuaca B" data={mlData.processed_data.filter((d: any) => d.cluster === 1)} fill="#34d399" />
+                    <Scatter name="Profil Cuaca C" data={mlData.processed_data.filter((d: any) => d.cluster === 2)} fill="#facc15" />
+                  </ScatterChart>
                 </ResponsiveContainer>
               </div>
             </div>
