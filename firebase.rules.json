@@ -92,8 +92,15 @@
           "humidity":    { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
           "windSpeed":   { ".validate": "newData.isNumber() && newData.val() >= 0" },
           "description": { ".validate": "newData.isString() && newData.val().length <= 100" }
+        },
+
+        "commands": {
+          ".write": true,
+          ".read": true,
+          "wifiOff": {
+            ".validate": "newData.isBoolean()"
+          }
         }
-      }
     }
   }
 }

@@ -89,6 +89,19 @@ export async function pushHistoryEntry(entry: HistoryEntry): Promise<void> {
   await push(ref(db, `${DEVICE_PATH}/history`), entry);
 }
 
+// ── Remote WiFi Control ─────────────────────────────────────────
+
+/**
+ * Kirim perintah matikan WiFi ke ESP32 melalui Firebase.
+ * ESP32 polling /commands tiap 10 detik.
+ * Setelah WiFi mati, harus 4x tap fisik untuk menyalakan kembali.
+ */
+export async function sendWifiOffCommand(): Promise<void> {
+  await update(ref(db, `${DEVICE_PATH}/commands`), {
+    wifiOff: true,
+  });
+}
+
 /**
  * Hapus data history dari Firebase, tapi sisakan 2 data terakhir per ruangan.
  * (Agar grafik dan riwayat tidak kosong melompong)
