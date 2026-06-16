@@ -101,7 +101,23 @@ def analyze():
             for t, h in zip(temps, humidities)
         ]
         
-        clusters = kmeans_2d(normalized_data, k=min(3, len(records)))
+        raw_clusters = kmeans_2d(normalized_data, k=min(3, len(records)))
+        
+        # Sort clusters by average temperature so 0=Dingin, 1=Optimal, 2=Panas
+        cluster_temps = {0: [], 1: [], 2: []}
+        for i, c in enumerate(raw_clusters):
+            cluster_temps[c].append(temps[i])
+            
+        avg_cluster_temps = {}
+        for c in range(3):
+            if cluster_temps[c]:
+                avg_cluster_temps[c] = sum(cluster_temps[c]) / len(cluster_temps[c])
+            else:
+                avg_cluster_temps[c] = float('inf') # Push empty clusters to end
+
+        sorted_clusters = sorted([c for c in range(3) if cluster_temps[c]], key=lambda c: avg_cluster_temps[c])
+        mapping = {old_id: new_id for new_id, old_id in enumerate(sorted_clusters)}
+        clusters = [mapping.get(c, 0) for c in raw_clusters]
 
         # 3. Forecasting (Linear Regression)
         m, b = linear_regression(timestamps, temps)

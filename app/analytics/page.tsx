@@ -262,7 +262,7 @@ export default function AnalyticsPage() {
                       contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
                       labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
                     />
-                    <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                    <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
                     <Line 
                       data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Valid (°C)" 
                       stroke="#22d3ee" strokeWidth={2} dot={false} isAnimationActive={false}
@@ -301,6 +301,7 @@ export default function AnalyticsPage() {
                       contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                       labelFormatter={(l) => formatTime(Number(l))}
                     />
+                    <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
                     <Scatter 
                       name="Suhu Normal" 
                       data={mlData.processed_data.filter((d) => !d.is_anomaly)} 
@@ -338,10 +339,10 @@ export default function AnalyticsPage() {
                       cursor={{ strokeDasharray: '3 3' }}
                       contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', backdropFilter: 'blur(10px)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                     />
-                    <Legend wrapperStyle={{ paddingTop: '10px' }} />
-                    <Scatter name="Profil Sejuk" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#a855f7" fillOpacity={0.8} isAnimationActive={false} />
-                    <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#34d399" fillOpacity={0.8} isAnimationActive={false} />
-                    <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#facc15" fillOpacity={0.8} isAnimationActive={false} />
+                    <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                    <Scatter name="Profil Dingin" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#3b82f6" fillOpacity={0.8} isAnimationActive={false} />
+                    <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#22c55e" fillOpacity={0.8} isAnimationActive={false} />
+                    <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#ef4444" fillOpacity={0.8} isAnimationActive={false} />
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
