@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
                       stroke="#22d3ee" strokeWidth={2} dot={false} 
                     />
                     <Line 
-                      data={mlData.forecast} type="dashed" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)" 
+                      data={mlData.forecast} type="monotone" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)" 
                       stroke="#a855f7" strokeWidth={2} strokeDasharray="5 5" dot={false} 
                     />
                   </LineChart>
