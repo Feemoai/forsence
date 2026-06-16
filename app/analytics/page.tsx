@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from '@/lib/hooks/useHistory';
 import { Activity, BrainCircuit, AlertTriangle, ThermometerSun, TrendingUp, Calendar, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +28,7 @@ interface MLData {
 }
 
 export default function AnalyticsPage() {
-  const { history, loading: historyLoading } = useHistory(500); // Fetch more for ML
+  const { history, loading: historyLoading } = useHistory(250); // Fetch less for performance
   const [analyzing, setAnalyzing] = useState(false);
   const [mlData, setMlData] = useState<MLData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
   const [selectedRoom, setSelectedRoom] = useState<RoomId | 'ALL'>('ALL');
   const [dateFilter, setDateFilter] = useState<'ALL' | '1D' | '7D'>('ALL');
 
-  const filteredHistory = history.filter((d) => {
+  const filteredHistory = React.useMemo(() => history.filter((d) => {
     if (selectedRoom !== 'ALL' && d.room !== selectedRoom) return false;
     if (dateFilter !== 'ALL') {
       const diff = Date.now() - (d.timestamp * 1000);
@@ -57,7 +57,7 @@ export default function AnalyticsPage() {
       if (dateFilter === '7D' && diff > 7 * 86400000) return false;
     }
     return true;
-  });
+  }), [history, selectedRoom, dateFilter]);
 
   const handleAnalyze = async () => {
     if (filteredHistory.length < 5) {
@@ -123,7 +123,8 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-4">
+            {!mlData && (
+              <div className="flex flex-wrap items-center gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
                   <Filter className="w-3 h-3" /> Ruangan
@@ -170,19 +171,12 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             </div>
+            )}
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-            {mlData && (
-              <button
-                onClick={handleClear}
-                className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all text-base font-bold w-full sm:w-auto justify-center flex items-center gap-2"
-              >
-                Hapus Data
-              </button>
-            )}
             <button
-              onClick={handleAnalyze}
+              onClick={mlData ? handleClear : handleAnalyze}
               disabled={analyzing || historyLoading}
               className="group relative flex items-center justify-center gap-3 px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl transition-all disabled:opacity-50 text-base font-bold w-full sm:w-auto shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 overflow-hidden"
             >
