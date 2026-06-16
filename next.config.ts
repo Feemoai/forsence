@@ -5,15 +5,15 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', 'react-markdown'],
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/ml/:path*',
-        destination:
-          process.env.NODE_ENV === 'development'
-            ? 'http://127.0.0.1:5328/api/ml/:path*'
-            : '/api/ml/:path*',
-      },
-    ];
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/api/ml/:path*',
+          destination: 'http://127.0.0.1:5328/api/ml/:path*',
+        },
+      ];
+    }
+    return [];
   },
   eslint: {
     ignoreDuringBuilds: true,
