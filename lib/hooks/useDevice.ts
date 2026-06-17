@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ref, onValue }        from 'firebase/database';
+import { ref, onValue, set }   from 'firebase/database';
 import { db }                  from '@/lib/firebase';
 import { DEVICE_PATH, ONLINE_THRESHOLD_SECONDS } from '@/lib/constants';
 import type { DeviceData }     from '@/types';
@@ -9,6 +9,14 @@ export function useDevice() {
   const [data,    setData]    = useState<DeviceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState<string | null>(null);
+
+  const changeActiveRoom = async (room: string) => {
+    try {
+      await set(ref(db, `${DEVICE_PATH}/command/activeRoom`), room);
+    } catch (error) {
+      console.error("Failed to send room command:", error);
+    }
+  };
 
   useEffect(() => {
     const unsub = onValue(
@@ -31,5 +39,5 @@ export function useDevice() {
     data?.lastSeen != null &&
     Date.now() / 1000 - data.lastSeen < ONLINE_THRESHOLD_SECONDS;
 
-  return { data, loading, error, isOnline };
+  return { data, loading, error, changeActiveRoom, isOnline };
 }

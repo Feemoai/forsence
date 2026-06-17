@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { Wifi, WifiOff, BatteryFull, Battery, BatteryLow, Cpu, Power } from 'lucide-react';
-import { sendWifiOffCommand } from '@/lib/firebase-actions';
+import { sendWifiOffCommand, sendActiveRoomCommand } from '@/lib/firebase-actions';
 import type { DeviceData } from '@/types';
 
 interface Props { data: DeviceData; isOnline: boolean }
@@ -101,16 +101,22 @@ export function DeviceStatusBar({ data, isOnline }: Props) {
           </div>
         </div>
 
-        {/* Active room — hanya jika ada */}
-        {data.activeRoom && (
-          <>
-            <Sep />
-            <div className="flex items-center gap-1 pl-3 md:pl-5 shrink-0">
-              <span className="text-[9px] text-white/25 hidden md:inline">Aktif:</span>
-              <span className="text-[10px] md:text-xs font-bold text-cyan-400">R.{data.activeRoom}</span>
-            </div>
-          </>
-        )}
+        {/* Active room Selector */}
+        <Sep />
+        <div className="flex items-center gap-1 px-3 md:px-5 shrink-0">
+          <span className="text-[9px] text-white/25 hidden md:inline mr-1">Ruang:</span>
+          <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
+            {['A', 'B', 'C'].map(r => (
+              <button
+                key={r}
+                onClick={() => sendActiveRoomCommand(r)}
+                className={`w-6 h-5 md:w-8 md:h-6 flex items-center justify-center text-[10px] md:text-xs font-bold rounded-md transition-all ${data.activeRoom === r ? 'bg-cyan-500 text-white shadow-md' : 'text-white/40 hover:text-white hover:bg-white/10'}`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* WiFi OFF button — hanya saat online */}
         {isOnline && (

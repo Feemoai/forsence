@@ -3,7 +3,7 @@
 // (Separation of Concerns: komponen hanya panggil fungsi ini)
 // ================================================================
 
-import { ref, update, push }      from 'firebase/database';
+import { ref, update, push, set }   from 'firebase/database';
 import { db }                     from '@/lib/firebase';
 import { DEVICE_PATH, INPUT_LIMITS, ALLOWED_ICONS } from '@/lib/constants';
 import type { RoomId, HistoryEntry } from '@/types';
@@ -53,6 +53,30 @@ export async function updateRoomLabel(
   await update(ref(db, `${DEVICE_PATH}/rooms/${roomId}`), {
     label: clean,
   });
+}
+
+export async function addFakeHistory(room: RoomId) {
+  const fakeEntry: HistoryEntry = {
+    room,
+    temp: 20 + Math.random() * 10,
+    humidity: 40 + Math.random() * 20,
+    heatIndex: 25 + Math.random() * 5,
+    comfort: "Nyaman",
+    timestamp: Date.now() / 1000
+  };
+
+  const path = `${DEVICE_PATH}/history/${room}`;
+  await push(ref(db, path), fakeEntry);
+}
+
+// ── Remote Command Actions ──────────────────────────────────────
+
+export async function sendActiveRoomCommand(room: string) {
+  if (!['A', 'B', 'C'].includes(room)) {
+    throw new Error('Room tidak valid. Harus A, B, atau C');
+  }
+  const path = `${DEVICE_PATH}/command/activeRoom`;
+  await set(ref(db, path), room);
 }
 
 /**
