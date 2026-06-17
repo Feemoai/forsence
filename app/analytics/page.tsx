@@ -24,7 +24,7 @@ interface MLData {
     anomalies_detected: number;
   };
   processed_data: MLRecord[];
-  forecast: { timestamp: number; predicted_temp: number }[];
+  forecast: { timestamp: number; predicted_temp: number; predicted_humidity: number }[];
 }
 
 export default function AnalyticsPage() {
@@ -279,10 +279,47 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
+          <div className="relative">
+            <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                    <div className="p-2 bg-cyan-500/20 rounded-xl"><TrendingUp className="w-6 h-6 text-cyan-400" /></div>
+                    2. Time-Series Forecasting (Kelembapan)
+                  </h2>
+                  <p className="text-sm md:text-base text-white/50 mt-2">Prediksi arah tren kelembapan menggunakan model <span className="text-cyan-300 font-medium">Linear Regression</span>. Berguna untuk mendeteksi potensi udara terlalu kering atau basah.</p>
+                </div>
+              </div>
+              <div className="h-[300px] md:h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
+                    <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                    <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                    <Tooltip 
+                      isAnimationActive={false}
+                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
+                      labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
+                    />
+                    <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                    <Line 
+                      data={mlData.processed_data} type="monotone" dataKey="humidity" name="Kelembapan Valid (%)" 
+                      stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false}
+                    />
+                    <Line 
+                      data={mlData.forecast} type="monotone" dataKey="predicted_humidity" name="Prediksi Masa Depan (%)" 
+                      stroke="#22d3ee" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
           {/* GRID: ANOMALY & CLUSTERING */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
             
-            {/* 2. ANOMALY DETECTION */}
+            {/* 3. ANOMALY DETECTION */}
             <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
               <div className="mb-6">
                 <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
@@ -322,7 +359,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
 
-            {/* 3. CLUSTERING */}
+            {/* 4. CLUSTERING */}
             <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
               <div className="mb-6">
                 <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">

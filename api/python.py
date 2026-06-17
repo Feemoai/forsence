@@ -118,25 +118,32 @@ def analyze():
         sorted_clusters = sorted([c for c in range(3) if cluster_temps[c]], key=lambda c: avg_cluster_temps[c])
         mapping = {old_id: new_id for new_id, old_id in enumerate(sorted_clusters)}
         clusters = [mapping.get(c, 0) for c in raw_clusters]
-
+        
         # 3. Forecasting (Short-term Trend with Dampening)
         # Instead of global linear regression, use recent points to capture current trajectory
         trend_window = min(len(timestamps), max(5, int(len(timestamps) * 0.1)))
-        m_short, _ = linear_regression(timestamps[-trend_window:], temps[-trend_window:])
+        
+        # Temperature trend
+        m_short_temp, _ = linear_regression(timestamps[-trend_window:], temps[-trend_window:])
+        # Humidity trend
+        m_short_hum, _ = linear_regression(timestamps[-trend_window:], humidities[-trend_window:])
         
         time_diffs = [timestamps[i] - timestamps[i-1] for i in range(1, len(timestamps))]
         avg_interval = sum(time_diffs) / len(time_diffs) if time_diffs else 60
         
         last_time = timestamps[-1]
         last_temp = temps[-1]
+        last_hum = humidities[-1]
         
         predictions = []
         current_pred_temp = last_temp
+        current_pred_hum = last_hum
         
         # Add the exact last point to connect the line seamlessly in the chart
         predictions.append({
             "timestamp": int(last_time),
-            "predicted_temp": round(float(last_temp), 2)
+            "predicted_temp": round(float(last_temp), 2),
+            "predicted_humidity": round(float(last_hum), 2)
         })
         
         for i in range(1, 13):
@@ -144,11 +151,13 @@ def analyze():
             
             # Dampening factor simulates thermal equilibrium (flattening out over time)
             dampening = 0.75 ** i
-            current_pred_temp += (m_short * avg_interval) * dampening
+            current_pred_temp += (m_short_temp * avg_interval) * dampening
+            current_pred_hum += (m_short_hum * avg_interval) * dampening
             
             predictions.append({
                 "timestamp": int(next_time),
-                "predicted_temp": round(float(current_pred_temp), 2)
+                "predicted_temp": round(float(current_pred_temp), 2),
+                "predicted_humidity": round(float(current_pred_hum), 2)
             })
 
         # Calculate metrics
