@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { Wifi, WifiOff, BatteryFull, Battery, BatteryLow, Cpu, Power } from 'lucide-react';
+import { Wifi, WifiOff, BatteryFull, Battery, BatteryLow, Cpu, Power, Loader2 } from 'lucide-react';
 import { sendWifiOffCommand, sendActiveRoomCommand } from '@/lib/firebase-actions';
 import type { DeviceData } from '@/types';
 
@@ -10,7 +10,14 @@ export function DeviceStatusBar({ data, isOnline }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sending, setSending] = useState(false);
+  const [pendingRoom, setPendingRoom] = useState<string | null>(null);
   const pct = data.battery ?? 0;
+
+  useEffect(() => {
+    if (data.activeRoom === pendingRoom) {
+      setPendingRoom(null);
+    }
+  }, [data.activeRoom, pendingRoom]);
 
   useEffect(() => {
     const tick = () => setElapsed(Math.floor(Date.now() / 1000 - data.lastSeen));
@@ -109,10 +116,24 @@ export function DeviceStatusBar({ data, isOnline }: Props) {
             {['A', 'B', 'C'].map(r => (
               <button
                 key={r}
-                onClick={() => sendActiveRoomCommand(r)}
-                className={`w-6 h-5 md:w-8 md:h-6 flex items-center justify-center text-[10px] md:text-xs font-bold rounded-md transition-all ${data.activeRoom === r ? 'bg-cyan-500 text-white shadow-md' : 'text-white/40 hover:text-white hover:bg-white/10'}`}
+                onClick={async () => {
+                  setPendingRoom(r);
+                  try {
+                    await sendActiveRoomCommand(r);
+                  } catch(e) {
+                    setPendingRoom(null);
+                  }
+                }}
+                disabled={pendingRoom !== null && pendingRoom !== r}
+                className={`w-6 h-5 md:w-8 md:h-6 flex items-center justify-center text-[10px] md:text-xs font-bold rounded-md transition-all ${
+                  data.activeRoom === r 
+                    ? 'bg-cyan-500 text-white shadow-md' 
+                    : pendingRoom === r 
+                      ? 'bg-white/10 text-cyan-400'
+                      : 'text-white/40 hover:text-white hover:bg-white/10'
+                }`}
               >
-                {r}
+                {pendingRoom === r ? <Loader2 className="w-3 h-3 animate-spin" /> : r}
               </button>
             ))}
           </div>
