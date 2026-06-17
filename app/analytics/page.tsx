@@ -97,8 +97,9 @@ export default function AnalyticsPage() {
     localStorage.removeItem('forsence_ml_data');
   };
 
-  const formatTime = (ts: number) => new Date(ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-  const formatDate = (ts: number) => new Date(ts).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  // Convert Unix timestamp (seconds) to Javascript Date (milliseconds)
+  const formatTime = (ts: number) => new Date(ts * 1000).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  const formatDate = (ts: number) => new Date(ts * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
   return (
     <div className="p-3 md:p-6 space-y-6 md:space-y-8 pb-24">

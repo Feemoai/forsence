@@ -123,7 +123,7 @@ def analyze():
         m, b = linear_regression(timestamps, temps)
         
         time_diffs = [timestamps[i] - timestamps[i-1] for i in range(1, len(timestamps))]
-        avg_interval = sum(time_diffs) / len(time_diffs) if time_diffs else 60000
+        avg_interval = sum(time_diffs) / len(time_diffs) if time_diffs else 60
         last_time = timestamps[-1]
         
         predictions = []
