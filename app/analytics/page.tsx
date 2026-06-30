@@ -427,9 +427,8 @@ export default function AnalyticsPage() {
                 const humEffect = latest.heatIndex - (baseValue + tempEffect);
                 
                 const shapData = [
-                  { name: 'Base Value', range: [0, baseValue], color: '#3b82f6', valStr: `+${baseValue.toFixed(1)}` },
-                  { name: 'Suhu Aktual', range: tempEffect > 0 ? [baseValue, baseValue + tempEffect] : [baseValue + tempEffect, baseValue], color: tempEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${tempEffect > 0 ? '+' : ''}${tempEffect.toFixed(1)}` },
-                  { name: 'Efek Kelembapan', range: humEffect > 0 ? [baseValue + tempEffect, latest.heatIndex] : [latest.heatIndex, baseValue + tempEffect], color: humEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${humEffect > 0 ? '+' : ''}${humEffect.toFixed(1)}` }
+                  { name: 'Suhu Aktual', value: parseFloat(tempEffect.toFixed(1)), color: tempEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${tempEffect > 0 ? '+' : ''}${tempEffect.toFixed(1)}°C` },
+                  { name: 'Efek Kelembapan', value: parseFloat(humEffect.toFixed(1)), color: humEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${humEffect > 0 ? '+' : ''}${humEffect.toFixed(1)}°C` }
                 ];
 
                 return (
@@ -502,20 +501,20 @@ export default function AnalyticsPage() {
                           <div className="p-2 bg-purple-500/20 rounded-xl"><Sparkles className="w-6 h-6 text-purple-400" /></div>
                           Atribusi Dampak (SHAP Waterfall)
                         </h2>
-                        <p className="text-sm text-white/50 mt-1">Menganalisis seberapa besar kontribusi Suhu Aktual dan Kelembapan dalam mendongkrak angka Heat Index.</p>
+                        <p className="text-sm text-white/50 mt-1">Menganalisis pendorong Heat Index dari nilai dasar <span className="text-blue-400 font-bold">(27.5°C)</span>. Batang ke kanan menunjukkan faktor yang membuat udara lebih gerah.</p>
                       </div>
                       <div className="h-[250px] md:h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={shapData} layout="vertical" margin={{ top: 20, right: 40, left: 20, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" horizontal={false} />
-                            <XAxis type="number" stroke="#ffffff40" fontSize={12} domain={[20, 'auto']} />
+                            <XAxis type="number" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} />
                             <YAxis type="category" dataKey="name" stroke="#ffffff80" fontSize={12} width={120} />
                             <Tooltip 
                               cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                               contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
                               formatter={(value: any, name: string, props: any) => [props.payload.valStr, 'Kontribusi']}
                             />
-                            <Bar dataKey="range" barSize={32} radius={4} isAnimationActive={false}>
+                            <Bar dataKey="value" barSize={32} radius={4} isAnimationActive={false}>
                               {shapData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
                               ))}
