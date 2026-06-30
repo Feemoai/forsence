@@ -443,7 +443,7 @@ export default function AnalyticsPage() {
                           {latest.heatIndex > 32 ? (
                             <>
                               Wah, ruangan ini sedang masuk fase <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index menyentuh <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>!
-                              Walaupun suhu aktual ruangan hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih panas</span> daripada suhu aslinya.
+                              Walaupun suhu aktual ruangan hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih panas</span>.
                             </>
                           ) : (
                             <>
