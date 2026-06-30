@@ -387,7 +387,7 @@ export default function AnalyticsPage() {
                       <div className="p-2 bg-emerald-500/20 rounded-xl"><Activity className="w-5 h-5 text-emerald-400" /></div>
                       3. K-Means Profiling
                     </h2>
-                    <p className="text-sm text-white/50 mt-2">Membagi sebaran suhu & kelembapan ke dalam <span className="text-emerald-300 font-medium">3 Profil Identik</span>. Berguna untuk memahami pola kenyamanan.</p>
+                    <p className="text-sm text-white/50 mt-2">Membagi sebaran suhu & kelembapan ke dalam <span className="text-emerald-300 font-medium">3 Profil berbeda</span>. Berguna untuk memahami pola kenyamanan.</p>
                   </div>
                   <div className="h-[250px] md:h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
