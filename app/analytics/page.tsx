@@ -1,10 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from '@/lib/hooks/useHistory';
-import { Activity, BrainCircuit, AlertTriangle, ThermometerSun, TrendingUp, Calendar, Filter } from 'lucide-react';
+import { Activity, BrainCircuit, AlertTriangle, ThermometerSun, TrendingUp, Calendar, Filter, Lightbulb, Sparkles, MessageSquare, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis, BarChart, Bar, Cell
 } from 'recharts';
 import type { RoomId } from '@/types';
 
@@ -32,6 +32,7 @@ export default function AnalyticsPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [mlData, setMlData] = useState<MLData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'predictive' | 'xai'>('predictive');
 
   // Restore state from localStorage
   useEffect(() => {
@@ -233,13 +234,37 @@ export default function AnalyticsPage() {
       {mlData && !analyzing && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-8">
           
-          {/* METRICS ROW */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard title="Rata-rata Suhu" value={`${mlData.metrics.average_temp}°C`} icon={ThermometerSun} color="cyan" />
-            <MetricCard title="Anomali Terdeteksi" value={mlData.metrics.anomalies_detected} icon={AlertTriangle} color="red" />
-            <MetricCard title="Prediksi Maksimum" value={`${mlData.forecast[mlData.forecast.length-1].predicted_temp}°C`} icon={TrendingUp} color="purple" />
-            <MetricCard title="Data Diproses" value={`${mlData.processed_data.length} Valid`} icon={Activity} color="emerald" />
+          {/* TABS */}
+          <div className="flex p-1 bg-white/5 border border-white/10 rounded-2xl w-fit mx-auto backdrop-blur-md">
+            <button
+              onClick={() => setActiveTab('predictive')}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                activeTab === 'predictive' ? 'bg-purple-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
+              }`}
+            >
+              <Activity className="w-4 h-4" />
+              Predictive Models
+            </button>
+            <button
+              onClick={() => setActiveTab('xai')}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                activeTab === 'xai' ? 'bg-cyan-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
+              }`}
+            >
+              <Lightbulb className="w-4 h-4" />
+              Explainable AI (XAI)
+            </button>
           </div>
+
+          {activeTab === 'predictive' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+              {/* METRICS ROW */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <MetricCard title="Rata-rata Suhu" value={`${mlData.metrics.average_temp}°C`} icon={ThermometerSun} color="cyan" />
+                <MetricCard title="Anomali Terdeteksi" value={mlData.metrics.anomalies_detected} icon={AlertTriangle} color="red" />
+                <MetricCard title="Prediksi Maksimum" value={`${mlData.forecast[mlData.forecast.length-1].predicted_temp}°C`} icon={TrendingUp} color="purple" />
+                <MetricCard title="Data Diproses" value={`${mlData.processed_data.length} Valid`} icon={Activity} color="emerald" />
+              </div>
 
           {/* 1. FORECASTING */}
           <div className="relative">
@@ -390,8 +415,123 @@ export default function AnalyticsPage() {
             </div>
 
           </div>
+          </motion.div>
+          )}
+
+          {activeTab === 'xai' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+              {filteredHistory.length > 0 ? (() => {
+                const latest = filteredHistory[filteredHistory.length - 1];
+                const baseValue = 27.5;
+                const tempEffect = latest.temp - 27;
+                const humEffect = latest.heatIndex - (baseValue + tempEffect);
+                
+                const shapData = [
+                  { name: 'Base Value', range: [0, baseValue], color: '#3b82f6', valStr: `+${baseValue.toFixed(1)}` },
+                  { name: 'Suhu Aktual', range: tempEffect > 0 ? [baseValue, baseValue + tempEffect] : [baseValue + tempEffect, baseValue], color: tempEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${tempEffect > 0 ? '+' : ''}${tempEffect.toFixed(1)}` },
+                  { name: 'Efek Kelembapan', range: humEffect > 0 ? [baseValue + tempEffect, latest.heatIndex] : [latest.heatIndex, baseValue + tempEffect], color: humEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${humEffect > 0 ? '+' : ''}${humEffect.toFixed(1)}` }
+                ];
+
+                return (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* A. Natural Language Explanation */}
+                    <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-6 shadow-lg flex flex-col">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-blue-500/20 rounded-xl">
+                          <MessageSquare className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h2 className="text-xl font-bold text-white">FORSENCE AI Insights</h2>
+                      </div>
+                      <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex-1 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full" />
+                        <p className="text-white/80 leading-relaxed relative z-10 text-sm md:text-base">
+                          {latest.heatIndex > 32 ? (
+                            <>
+                              Saat ini ruangan berada pada status <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
+                              Meskipun suhu asli ruangan tercatat <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya tingkat kelembapan sebesar <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> memerangkap panas di udara. Hal ini membuat tubuh manusia kesulitan membuang panas melalui keringat, sehingga udara terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C lebih panas</span> dari aslinya!
+                            </>
+                          ) : (
+                            <>
+                              Saat ini ruangan terpantau <span className="text-emerald-400 font-bold">Nyaman</span> dengan Heat Index <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
+                              Suhu asli ruangan tercatat <span className="text-emerald-400 font-bold">{latest.temp.toFixed(1)}°C</span> dengan tingkat kelembapan ideal di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span>. Udara mengalir dengan baik sehingga tidak ada panas berlebih yang terperangkap.
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* B. Counterfactual Explanation */}
+                    <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-6 shadow-lg flex flex-col">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-emerald-500/20 rounded-xl">
+                          <Lightbulb className="w-6 h-6 text-emerald-400" />
+                        </div>
+                        <h2 className="text-xl font-bold text-white">Rekomendasi Tindakan</h2>
+                      </div>
+                      <div className="flex-1 flex flex-col justify-center space-y-4">
+                        {latest.heatIndex > 28 ? (
+                          <>
+                            <p className="text-sm text-white/50 text-center">Untuk mencapai status target <span className="text-emerald-400 font-bold">Nyaman (26°C)</span>, Anda harus:</p>
+                            <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
+                              <div className="bg-red-500/10 border border-red-500/20 px-6 py-4 rounded-xl text-center w-full md:w-auto">
+                                <span className="block text-red-400 text-sm mb-1">Turunkan Suhu AC</span>
+                                <span className="text-2xl font-black text-white">{(latest.temp - 25).toFixed(1)}°C</span>
+                              </div>
+                              <ArrowRight className="w-6 h-6 text-white/20 hidden md:block" />
+                              <div className="bg-cyan-500/10 border border-cyan-500/20 px-6 py-4 rounded-xl text-center w-full md:w-auto">
+                                <span className="block text-cyan-400 text-sm mb-1">Kurangi Kelembapan</span>
+                                <span className="text-2xl font-black text-white">{(latest.humidity - 50).toFixed(0)}%</span>
+                              </div>
+                            </div>
+                            <p className="text-xs text-center text-white/40 mt-2">Nyalakan mode "Dry" pada AC Anda untuk menyerap kelembapan dengan efektif.</p>
+                          </>
+                        ) : (
+                          <div className="text-center p-6 border border-emerald-500/20 bg-emerald-500/5 rounded-xl">
+                            <span className="text-4xl mb-4 block">✨</span>
+                            <h3 className="text-emerald-400 font-bold text-lg">Kondisi Optimal</h3>
+                            <p className="text-sm text-white/60 mt-1">Tidak ada tindakan yang diperlukan. Pertahankan suhu dan ventilasi saat ini.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* C. SHAP Waterfall */}
+                    <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-6 shadow-lg lg:col-span-2">
+                      <div className="mb-6">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                          <div className="p-2 bg-purple-500/20 rounded-xl"><Sparkles className="w-6 h-6 text-purple-400" /></div>
+                          Atribusi Dampak (SHAP Waterfall)
+                        </h2>
+                        <p className="text-sm text-white/50 mt-1">Menganalisis seberapa besar kontribusi Suhu Aktual dan Kelembapan dalam mendongkrak angka Heat Index.</p>
+                      </div>
+                      <div className="h-[250px] md:h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={shapData} layout="vertical" margin={{ top: 20, right: 40, left: 20, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" horizontal={false} />
+                            <XAxis type="number" stroke="#ffffff40" fontSize={12} domain={[20, 'auto']} />
+                            <YAxis type="category" dataKey="name" stroke="#ffffff80" fontSize={12} width={120} />
+                            <Tooltip 
+                              cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                              contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                              formatter={(value: any, name: string, props: any) => [props.payload.valStr, 'Kontribusi']}
+                            />
+                            <Bar dataKey="range" barSize={32} radius={4} isAnimationActive={false}>
+                              {shapData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })() : (
+                <div className="text-center py-10 text-white/50">Memuat data sensor terkini...</div>
+              )}
+            </motion.div>
+          )}
         </motion.div>
-      )}
     </div>
   );
 }
