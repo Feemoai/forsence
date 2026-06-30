@@ -65,7 +65,7 @@ export default function AnalyticsPage() {
       setError(`Tidak cukup data untuk dianalisis (Ditemukan: ${filteredHistory.length}, Minimal: 5 data). Ubah filter untuk memperluas rentang data.`);
       return;
     }
-    
+
     setAnalyzing(true);
     setError(null);
     setMlData(null);
@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal memproses data");
-      
+
       setMlData(data);
       localStorage.setItem('forsence_ml_data', JSON.stringify(data));
     } catch (err: unknown) {
@@ -104,16 +104,16 @@ export default function AnalyticsPage() {
 
   return (
     <div className="p-3 md:p-6 space-y-6 md:space-y-8 pb-24">
-      
+
       {/* HEADER CONTROL PANEL */}
       <div className="bg-[#0a101f] border border-white/10 rounded-3xl p-5 md:p-8 relative overflow-hidden shadow-xl">
         {/* Simplified gradients instead of heavy blurs for low-end devices */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 rounded-full pointer-events-none" />
-        
+
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
           <div className="space-y-6 w-full lg:w-auto">
-            
+
             {/* Title */}
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-purple-400 flex items-center gap-3">
@@ -128,52 +128,50 @@ export default function AnalyticsPage() {
             {/* Filters */}
             {!mlData && (
               <div className="flex flex-wrap items-center gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
-                  <Filter className="w-3 h-3" /> Ruangan
-                </label>
-                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                  {['ALL', 'A', 'B', 'C'].map(r => (
-                    <button
-                      key={r}
-                      onClick={() => setSelectedRoom(r as any)}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                        selectedRoom === r 
-                        ? 'bg-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
-                        : 'text-white/40 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      {r === 'ALL' ? 'Semua' : `Room ${r}`}
-                    </button>
-                  ))}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
+                    <Filter className="w-3 h-3" /> Ruangan
+                  </label>
+                  <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    {['ALL', 'A', 'B', 'C'].map(r => (
+                      <button
+                        key={r}
+                        onClick={() => setSelectedRoom(r as any)}
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${selectedRoom === r
+                          ? 'bg-purple-500/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]'
+                          : 'text-white/40 hover:text-white hover:bg-white/5'
+                          }`}
+                      >
+                        {r === 'ALL' ? 'Semua' : `Room ${r}`}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3" /> Rentang Waktu
-                </label>
-                <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
-                  {[
-                    { val: '1D', label: '24 Jam' },
-                    { val: '7D', label: '7 Hari' },
-                    { val: 'ALL', label: 'Semua' }
-                  ].map(d => (
-                    <button
-                      key={d.val}
-                      onClick={() => setDateFilter(d.val as any)}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                        dateFilter === d.val 
-                        ? 'bg-cyan-500/20 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' 
-                        : 'text-white/40 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      {d.label}
-                    </button>
-                  ))}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-white/40 uppercase tracking-wider flex items-center gap-1.5">
+                    <Calendar className="w-3 h-3" /> Rentang Waktu
+                  </label>
+                  <div className="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                    {[
+                      { val: '1D', label: '24 Jam' },
+                      { val: '7D', label: '7 Hari' },
+                      { val: 'ALL', label: 'Semua' }
+                    ].map(d => (
+                      <button
+                        key={d.val}
+                        onClick={() => setDateFilter(d.val as any)}
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${dateFilter === d.val
+                          ? 'bg-cyan-500/20 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                          : 'text-white/40 hover:text-white hover:bg-white/5'
+                          }`}
+                      >
+                        {d.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
             )}
           </div>
 
@@ -233,23 +231,21 @@ export default function AnalyticsPage() {
       {/* RESULTS PORTFOLIO */}
       {mlData && !analyzing && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-8">
-          
+
           {/* TABS */}
           <div className="flex p-1 bg-white/5 border border-white/10 rounded-2xl w-fit mx-auto backdrop-blur-md">
             <button
               onClick={() => setActiveTab('predictive')}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-                activeTab === 'predictive' ? 'bg-purple-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
-              }`}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'predictive' ? 'bg-purple-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
+                }`}
             >
               <Activity className="w-4 h-4" />
               Predictive Models
             </button>
             <button
               onClick={() => setActiveTab('xai')}
-              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-                activeTab === 'xai' ? 'bg-cyan-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
-              }`}
+              className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'xai' ? 'bg-cyan-500 text-white shadow-lg' : 'text-white/40 hover:text-white'
+                }`}
             >
               <Lightbulb className="w-4 h-4" />
               Explainable AI (XAI)
@@ -262,160 +258,160 @@ export default function AnalyticsPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard title="Rata-rata Suhu" value={`${mlData.metrics.average_temp}°C`} icon={ThermometerSun} color="cyan" />
                 <MetricCard title="Anomali Terdeteksi" value={mlData.metrics.anomalies_detected} icon={AlertTriangle} color="red" />
-                <MetricCard title="Prediksi Maksimum" value={`${mlData.forecast[mlData.forecast.length-1].predicted_temp}°C`} icon={TrendingUp} color="purple" />
+                <MetricCard title="Prediksi Maksimum" value={`${mlData.forecast[mlData.forecast.length - 1].predicted_temp}°C`} icon={TrendingUp} color="purple" />
                 <MetricCard title="Data Diproses" value={`${mlData.processed_data.length} Valid`} icon={Activity} color="emerald" />
               </div>
 
-          {/* 1. FORECASTING */}
-          <div className="relative">
-            <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
-                    <div className="p-2 bg-purple-500/20 rounded-xl"><TrendingUp className="w-6 h-6 text-purple-400" /></div>
-                    1. Time-Series Forecasting
-                  </h2>
-                  <p className="text-sm md:text-base text-white/50 mt-2">Prediksi arah tren suhu menggunakan model <span className="text-purple-300 font-medium">Linear Regression</span>. Sangat berguna untuk mengantisipasi ruangan overheating.</p>
+              {/* 1. FORECASTING */}
+              <div className="relative">
+                <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
+                  <div className="mb-6 flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                        <div className="p-2 bg-purple-500/20 rounded-xl"><TrendingUp className="w-6 h-6 text-purple-400" /></div>
+                        1. Time-Series Forecasting
+                      </h2>
+                      <p className="text-sm md:text-base text-white/50 mt-2">Prediksi arah tren suhu menggunakan model <span className="text-purple-300 font-medium">Linear Regression</span>. Sangat berguna untuk mengantisipasi ruangan overheating.</p>
+                    </div>
+                  </div>
+                  <div className="h-[300px] md:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
+                        <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <Tooltip
+                          isAnimationActive={false}
+                          contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
+                          labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
+                        />
+                        <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                        <Line
+                          data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Valid (°C)"
+                          stroke="#22d3ee" strokeWidth={2} dot={false} isAnimationActive={false}
+                        />
+                        <Line
+                          data={mlData.forecast} type="monotone" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)"
+                          stroke="#a855f7" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
-              <div className="h-[300px] md:h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
-                    <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <Tooltip 
-                      isAnimationActive={false}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
-                      labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
-                    <Line 
-                      data={mlData.processed_data} type="monotone" dataKey="temp" name="Suhu Valid (°C)" 
-                      stroke="#22d3ee" strokeWidth={2} dot={false} isAnimationActive={false}
-                    />
-                    <Line 
-                      data={mlData.forecast} type="monotone" dataKey="predicted_temp" name="Prediksi Masa Depan (°C)" 
-                      stroke="#a855f7" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
 
-          <div className="relative">
-            <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
-                    <div className="p-2 bg-cyan-500/20 rounded-xl"><TrendingUp className="w-6 h-6 text-cyan-400" /></div>
-                    2. Time-Series Forecasting (Kelembapan)
-                  </h2>
-                  <p className="text-sm md:text-base text-white/50 mt-2">Prediksi arah tren kelembapan menggunakan model <span className="text-cyan-300 font-medium">Linear Regression</span>. Berguna untuk mendeteksi potensi udara terlalu kering atau basah.</p>
+              <div className="relative">
+                <div className="relative bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
+                  <div className="mb-6 flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                        <div className="p-2 bg-cyan-500/20 rounded-xl"><TrendingUp className="w-6 h-6 text-cyan-400" /></div>
+                        2. Time-Series Forecasting (Kelembapan)
+                      </h2>
+                      <p className="text-sm md:text-base text-white/50 mt-2">Prediksi arah tren kelembapan menggunakan model <span className="text-cyan-300 font-medium">Linear Regression</span>. Berguna untuk mendeteksi potensi udara terlalu kering atau basah.</p>
+                    </div>
+                  </div>
+                  <div className="h-[300px] md:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
+                        <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <Tooltip
+                          isAnimationActive={false}
+                          contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
+                          labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
+                        />
+                        <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                        <Line
+                          data={mlData.processed_data} type="monotone" dataKey="humidity" name="Kelembapan Valid (%)"
+                          stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false}
+                        />
+                        <Line
+                          data={mlData.forecast} type="monotone" dataKey="predicted_humidity" name="Prediksi Masa Depan (%)"
+                          stroke="#22d3ee" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
-              <div className="h-[300px] md:h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" vertical={false} />
-                    <XAxis dataKey="timestamp" type="number" scale="time" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <YAxis domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <Tooltip 
-                      isAnimationActive={false}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
-                      labelFormatter={(l) => `${formatDate(Number(l))} ${formatTime(Number(l))}`}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
-                    <Line 
-                      data={mlData.processed_data} type="monotone" dataKey="humidity" name="Kelembapan Valid (%)" 
-                      stroke="#3b82f6" strokeWidth={2} dot={false} isAnimationActive={false}
-                    />
-                    <Line 
-                      data={mlData.forecast} type="monotone" dataKey="predicted_humidity" name="Prediksi Masa Depan (%)" 
-                      stroke="#22d3ee" strokeWidth={2} strokeDasharray="6 6" dot={false} isAnimationActive={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
 
-          {/* GRID: ANOMALY & CLUSTERING */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
-            
-            {/* 3. ANOMALY DETECTION */}
-            <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
-              <div className="mb-6">
-                <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-red-500/20 rounded-xl"><AlertTriangle className="w-5 h-5 text-red-400" /></div>
-                  2. Anomaly Detection
-                </h2>
-                <p className="text-sm text-white/50 mt-2">Pendeteksian suhu tak wajar dengan algoritma <span className="text-red-300 font-medium">Z-Score</span>. Titik merah menunjukan anomali ekstrim.</p>
-              </div>
-              <div className="h-[250px] md:h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
-                    <XAxis dataKey="timestamp" type="number" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <YAxis dataKey="temp" domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
-                    <ZAxis range={[60, 60]} />
-                    <Tooltip 
-                      isAnimationActive={false}
-                      cursor={{ strokeDasharray: '3 3' }}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                      labelFormatter={(l) => formatTime(Number(l))}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
-                    <Scatter 
-                      name="Suhu Normal" 
-                      data={mlData.processed_data.filter((d) => !d.is_anomaly)} 
-                      fill="#22d3ee" fillOpacity={0.6}
-                      isAnimationActive={false}
-                    />
-                    <Scatter 
-                      name="Suhu Anomali" 
-                      data={mlData.processed_data.filter((d) => d.is_anomaly)} 
-                      fill="#ef4444" 
-                      isAnimationActive={false}
-                    />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+              {/* GRID: ANOMALY & CLUSTERING */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
 
-            {/* 4. CLUSTERING */}
-            <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
-              <div className="mb-6">
-                <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-emerald-500/20 rounded-xl"><Activity className="w-5 h-5 text-emerald-400" /></div>
-                  3. K-Means Profiling
-                </h2>
-                <p className="text-sm text-white/50 mt-2">Membagi sebaran suhu & kelembapan ke dalam <span className="text-emerald-300 font-medium">3 Profil Identik</span>. Berguna untuk memahami pola kenyamanan.</p>
-              </div>
-              <div className="h-[250px] md:h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
-                    <XAxis type="number" dataKey="temp" name="Suhu" unit="°C" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} tickMargin={10} />
-                    <YAxis type="number" dataKey="humidity" name="Kelembapan" unit="%" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} tickMargin={10} />
-                    <ZAxis range={[80, 80]} />
-                    <Tooltip 
-                      isAnimationActive={false}
-                      cursor={{ strokeDasharray: '3 3' }}
-                      contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                    />
-                    <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
-                    <Scatter name="Profil Dingin" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#3b82f6" fillOpacity={0.8} isAnimationActive={false} />
-                    <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#22c55e" fillOpacity={0.8} isAnimationActive={false} />
-                    <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#ef4444" fillOpacity={0.8} isAnimationActive={false} />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+                {/* 3. ANOMALY DETECTION */}
+                <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
+                  <div className="mb-6">
+                    <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
+                      <div className="p-2 bg-red-500/20 rounded-xl"><AlertTriangle className="w-5 h-5 text-red-400" /></div>
+                      2. Anomaly Detection
+                    </h2>
+                    <p className="text-sm text-white/50 mt-2">Pendeteksian suhu tak wajar dengan algoritma <span className="text-red-300 font-medium">Z-Score</span>. Titik merah menunjukan anomali ekstrim.</p>
+                  </div>
+                  <div className="h-[250px] md:h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
+                        <XAxis dataKey="timestamp" type="number" domain={['auto', 'auto']} tickFormatter={formatTime} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <YAxis dataKey="temp" domain={['auto', 'auto']} stroke="#ffffff40" fontSize={12} tickMargin={10} />
+                        <ZAxis range={[60, 60]} />
+                        <Tooltip
+                          isAnimationActive={false}
+                          cursor={{ strokeDasharray: '3 3' }}
+                          contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                          labelFormatter={(l) => formatTime(Number(l))}
+                        />
+                        <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                        <Scatter
+                          name="Suhu Normal"
+                          data={mlData.processed_data.filter((d) => !d.is_anomaly)}
+                          fill="#22d3ee" fillOpacity={0.6}
+                          isAnimationActive={false}
+                        />
+                        <Scatter
+                          name="Suhu Anomali"
+                          data={mlData.processed_data.filter((d) => d.is_anomaly)}
+                          fill="#ef4444"
+                          isAnimationActive={false}
+                        />
+                      </ScatterChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
 
-          </div>
-          </motion.div>
+                {/* 4. CLUSTERING */}
+                <div className="bg-[#0a101f] border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-lg">
+                  <div className="mb-6">
+                    <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-3">
+                      <div className="p-2 bg-emerald-500/20 rounded-xl"><Activity className="w-5 h-5 text-emerald-400" /></div>
+                      3. K-Means Profiling
+                    </h2>
+                    <p className="text-sm text-white/50 mt-2">Membagi sebaran suhu & kelembapan ke dalam <span className="text-emerald-300 font-medium">3 Profil Identik</span>. Berguna untuk memahami pola kenyamanan.</p>
+                  </div>
+                  <div className="h-[250px] md:h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ScatterChart margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" />
+                        <XAxis type="number" dataKey="temp" name="Suhu" unit="°C" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} tickMargin={10} />
+                        <YAxis type="number" dataKey="humidity" name="Kelembapan" unit="%" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} tickMargin={10} />
+                        <ZAxis range={[80, 80]} />
+                        <Tooltip
+                          isAnimationActive={false}
+                          cursor={{ strokeDasharray: '3 3' }}
+                          contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                        />
+                        <Legend wrapperStyle={{ paddingTop: '10px', fontSize: '11px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} />
+                        <Scatter name="Profil Dingin" data={mlData.processed_data.filter((d) => d.cluster === 0)} fill="#3b82f6" fillOpacity={0.8} isAnimationActive={false} />
+                        <Scatter name="Profil Optimal" data={mlData.processed_data.filter((d) => d.cluster === 1)} fill="#22c55e" fillOpacity={0.8} isAnimationActive={false} />
+                        <Scatter name="Profil Panas" data={mlData.processed_data.filter((d) => d.cluster === 2)} fill="#ef4444" fillOpacity={0.8} isAnimationActive={false} />
+                      </ScatterChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
           )}
 
           {activeTab === 'xai' && (
@@ -425,7 +421,7 @@ export default function AnalyticsPage() {
                 const baseValue = 27.5;
                 const tempEffect = latest.temp - 27;
                 const humEffect = latest.heatIndex - (baseValue + tempEffect);
-                
+
                 const shapData = [
                   { name: 'Suhu Aktual', value: parseFloat(tempEffect.toFixed(1)), color: tempEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${tempEffect > 0 ? '+' : ''}${tempEffect.toFixed(1)}°C` },
                   { name: 'Efek Kelembapan', value: parseFloat(humEffect.toFixed(1)), color: humEffect >= 0 ? '#ef4444' : '#22c55e', valStr: `${humEffect > 0 ? '+' : ''}${humEffect.toFixed(1)}°C` }
@@ -446,13 +442,13 @@ export default function AnalyticsPage() {
                         <p className="text-white/80 leading-relaxed relative z-10 text-sm md:text-base text-justify">
                           {latest.heatIndex > 32 ? (
                             <>
-                              Wah, ruangan ini sedang masuk fase <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index menyentuh <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>! 
-                              Walaupun suhu aktual ruangan hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih menyengat</span> daripada suhu aslinya.
+                              Wah, ruangan ini sedang masuk fase <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index menyentuh <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>!
+                              Walaupun suhu aktual ruangan hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih panas</span> daripada suhu aslinya.
                             </>
                           ) : (
                             <>
-                              Aman terkendali! Ruangan ini terasa <span className="text-emerald-400 font-bold">Sangat Nyaman</span> dengan Heat Index di <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
-                              Suhu aslinya berada di <span className="text-emerald-400 font-bold">{latest.temp.toFixed(1)}°C</span>, didukung dengan sirkulasi kelembapan yang ideal di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span>. Udaranya mengalir bebas, sehingga tidak ada hawa pengap yang tertahan di dalam ruangan.
+                              Sip aman terkendali! Ruangan ini terasa <span className="text-emerald-400 font-bold">Sangat Nyaman</span> dengan Heat Index di <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>.
+                              Suhu aslinya di <span className="text-emerald-400 font-bold">{latest.temp.toFixed(1)}°C</span>, didukung dengan sirkulasi kelembapan yang ideal di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span>. Udaranya mengalir bebas, sehingga tidak ada hawa panas yang tertahan di dalam ruangan.
                             </>
                           )}
                         </p>
@@ -488,7 +484,7 @@ export default function AnalyticsPage() {
                           <div className="text-center p-6 border border-emerald-500/20 bg-emerald-500/5 rounded-xl">
                             <span className="text-4xl mb-4 block">✨</span>
                             <h3 className="text-emerald-400 font-bold text-lg">Kondisi Optimal</h3>
-                            <p className="text-sm text-white/60 mt-1">Tidak ada tindakan yang diperlukan. Pertahankan suhu dan ventilasi saat ini.</p>
+                            <p className="text-sm text-white/60 mt-1">Tidak ada tindakan yang diperlukan. Pertahankan suhu dan sirkulasi udara saat ini.</p>
                           </div>
                         )}
                       </div>
@@ -501,7 +497,7 @@ export default function AnalyticsPage() {
                           <div className="p-2 bg-purple-500/20 rounded-xl"><Sparkles className="w-6 h-6 text-purple-400" /></div>
                           Analisis Faktor Utama (SHAP)
                         </h2>
-                        <p className="text-sm text-white/50 mt-1">Mengukur seberapa besar porsi kontribusi (beban) suhu aktual vs kelembapan yang membuat Heat Index menjauh dari angka normal <span className="text-blue-400 font-bold">(27.5°C)</span>.</p>
+                        <p className="text-sm text-white/50 mt-1">Mengukur seberapa besar porsi kontribusi suhu ruangan dan kelembapan yang membuat Heat Index menjauh dari angka normal <span className="text-blue-400 font-bold">(27.5°C)</span>.</p>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Suhu Card */}
@@ -544,9 +540,9 @@ export default function AnalyticsPage() {
                         <div className="mt-0.5 w-2 h-2 rounded-full bg-purple-500 animate-pulse shrink-0" />
                         <p className="text-sm text-white/70 leading-relaxed">
                           <strong className="text-white">Kesimpulan SHAP:</strong>{' '}
-                          {Math.abs(humEffect) > Math.abs(tempEffect) 
-                            ? 'Kelembapan terbukti menjadi faktor dominan yang paling memengaruhi kenyamanan ruangan Anda saat ini dibandingkan dengan suhu aktualnya.' 
-                            : 'Suhu aktual terbukti menjadi faktor dominan yang paling memengaruhi kenyamanan ruangan Anda saat ini.'}
+                          {Math.abs(humEffect) > Math.abs(tempEffect)
+                            ? 'Kelembapan terbukti menjadi faktor yang paling memengaruhi kenyamanan ruangan Anda saat ini dibandingkan dengan suhu ruangannya.'
+                            : 'Suhu aktual terbukti menjadi faktor yang paling memengaruhi kenyamanan ruangan Anda saat ini.'}
                         </p>
                       </div>
                     </div>
