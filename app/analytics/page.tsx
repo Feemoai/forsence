@@ -532,6 +532,7 @@ export default function AnalyticsPage() {
             </motion.div>
           )}
         </motion.div>
+      )}
     </div>
   );
 }
