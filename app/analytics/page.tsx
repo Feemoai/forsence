@@ -499,9 +499,9 @@ export default function AnalyticsPage() {
                       <div className="mb-6">
                         <h2 className="text-xl font-bold text-white flex items-center gap-3">
                           <div className="p-2 bg-purple-500/20 rounded-xl"><Sparkles className="w-6 h-6 text-purple-400" /></div>
-                          Atribusi Dampak (SHAP Waterfall)
+                          Analisis Faktor Utama (SHAP)
                         </h2>
-                        <p className="text-sm text-white/50 mt-1">Menganalisis pendorong Heat Index dari nilai dasar <span className="text-blue-400 font-bold">(27.5°C)</span>. Batang ke kanan menunjukkan faktor yang membuat udara lebih gerah.</p>
+                        <p className="text-sm text-white/50 mt-1">Mengukur seberapa besar porsi kontribusi (beban) suhu aktual vs kelembapan yang membuat Heat Index menjauh dari angka normal <span className="text-blue-400 font-bold">(27.5°C)</span>.</p>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Suhu Card */}
