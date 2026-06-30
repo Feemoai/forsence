@@ -503,24 +503,51 @@ export default function AnalyticsPage() {
                         </h2>
                         <p className="text-sm text-white/50 mt-1">Menganalisis pendorong Heat Index dari nilai dasar <span className="text-blue-400 font-bold">(27.5°C)</span>. Batang ke kanan menunjukkan faktor yang membuat udara lebih gerah.</p>
                       </div>
-                      <div className="h-[250px] md:h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={shapData} layout="vertical" margin={{ top: 20, right: 40, left: 20, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0a" horizontal={false} />
-                            <XAxis type="number" stroke="#ffffff40" fontSize={12} domain={['auto', 'auto']} />
-                            <YAxis type="category" dataKey="name" stroke="#ffffff80" fontSize={12} width={120} />
-                            <Tooltip 
-                              cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                              contentStyle={{ backgroundColor: 'rgba(10, 16, 31, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                              formatter={(value: any, name: string, props: any) => [props.payload.valStr, 'Kontribusi']}
-                            />
-                            <Bar dataKey="value" barSize={32} radius={4} isAnimationActive={false}>
-                              {shapData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                              ))}
-                            </Bar>
-                          </BarChart>
-                        </ResponsiveContainer>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Suhu Card */}
+                        <div className="bg-white/5 p-5 rounded-xl border border-white/10 flex items-center gap-4 relative overflow-hidden">
+                          <div className={`absolute top-0 right-0 w-16 h-16 blur-2xl rounded-full ${tempEffect >= 0 ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} />
+                          <div className={`p-3 rounded-full shrink-0 ${tempEffect >= 0 ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                            <ThermometerSun className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-white/60 mb-1">Dampak Suhu Aktual</p>
+                            <div className="flex items-baseline gap-2">
+                              <p className={`text-2xl font-black ${tempEffect >= 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                                {tempEffect > 0 ? '+' : ''}{tempEffect.toFixed(1)}°C
+                              </p>
+                              <span className="text-xs text-white/30">dari suhu normal</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Kelembapan Card */}
+                        <div className="bg-white/5 p-5 rounded-xl border border-white/10 flex items-center gap-4 relative overflow-hidden">
+                          <div className={`absolute top-0 right-0 w-16 h-16 blur-2xl rounded-full ${humEffect >= 0 ? 'bg-red-500/10' : 'bg-emerald-500/10'}`} />
+                          <div className={`p-3 rounded-full shrink-0 ${humEffect >= 0 ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                            <Activity className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-white/60 mb-1">Dampak Kelembapan</p>
+                            <div className="flex items-baseline gap-2">
+                              <p className={`text-2xl font-black ${humEffect >= 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                                {humEffect > 0 ? '+' : ''}{humEffect.toFixed(1)}°C
+                              </p>
+                              <span className="text-xs text-white/30">dari hawa gerah</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Kesimpulan Otomatis */}
+                      <div className="mt-6 bg-[#121a2f] p-4 rounded-xl border border-white/5 flex items-start gap-3">
+                        <div className="mt-0.5 w-2 h-2 rounded-full bg-purple-500 animate-pulse shrink-0" />
+                        <p className="text-sm text-white/70 leading-relaxed">
+                          <strong className="text-white">Kesimpulan SHAP:</strong>{' '}
+                          {Math.abs(humEffect) > Math.abs(tempEffect) 
+                            ? 'Kelembapan terbukti menjadi faktor dominan yang paling memengaruhi kenyamanan ruangan Anda saat ini dibandingkan dengan suhu aktualnya.' 
+                            : 'Suhu aktual terbukti menjadi faktor dominan yang paling memengaruhi kenyamanan ruangan Anda saat ini.'}
+                        </p>
                       </div>
                     </div>
                   </div>
