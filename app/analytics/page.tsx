@@ -447,7 +447,7 @@ export default function AnalyticsPage() {
                           {latest.heatIndex > 32 ? (
                             <>
                               Wah, ruangan ini sedang masuk fase <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index menyentuh <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>! 
-                              Walaupun suhu AC aslinya hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih menyengat</span> daripada suhu aslinya.
+                              Walaupun suhu aktual ruangan hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih menyengat</span> daripada suhu aslinya.
                             </>
                           ) : (
                             <>
@@ -473,7 +473,7 @@ export default function AnalyticsPage() {
                             <p className="text-sm text-white/50 text-center">Untuk mencapai status target <span className="text-emerald-400 font-bold">Nyaman (26°C)</span>, Anda harus:</p>
                             <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
                               <div className="bg-red-500/10 border border-red-500/20 px-6 py-4 rounded-xl text-center w-full md:w-auto">
-                                <span className="block text-red-400 text-sm mb-1">Turunkan Suhu AC</span>
+                                <span className="block text-red-400 text-sm mb-1">Turunkan Suhu</span>
                                 <span className="text-2xl font-black text-white">{(latest.temp - 25).toFixed(1)}°C</span>
                               </div>
                               <ArrowRight className="w-6 h-6 text-white/20 hidden md:block" />
@@ -482,7 +482,7 @@ export default function AnalyticsPage() {
                                 <span className="text-2xl font-black text-white">{(latest.humidity - 50).toFixed(0)}%</span>
                               </div>
                             </div>
-                            <p className="text-xs text-center text-white/40 mt-2">Nyalakan mode "Dry" pada AC Anda untuk menyerap kelembapan dengan efektif.</p>
+                            <p className="text-xs text-center text-white/40 mt-2">Nyalakan Exhaust Fan, perbaiki ventilasi udara, atau hidupkan mode Dry (jika ada AC) untuk mengurangi rasa gerah.</p>
                           </>
                         ) : (
                           <div className="text-center p-6 border border-emerald-500/20 bg-emerald-500/5 rounded-xl">
