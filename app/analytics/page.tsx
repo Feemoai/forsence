@@ -443,16 +443,16 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex-1 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-2xl rounded-full" />
-                        <p className="text-white/80 leading-relaxed relative z-10 text-sm md:text-base">
+                        <p className="text-white/80 leading-relaxed relative z-10 text-sm md:text-base text-justify">
                           {latest.heatIndex > 32 ? (
                             <>
-                              Saat ini ruangan berada pada status <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
-                              Meskipun suhu asli ruangan tercatat <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya tingkat kelembapan sebesar <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> memerangkap panas di udara. Hal ini membuat tubuh manusia kesulitan membuang panas melalui keringat, sehingga udara terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C lebih panas</span> dari aslinya!
+                              Wah, ruangan ini sedang masuk fase <span className="text-red-400 font-bold">Panas Berbahaya</span> dengan Heat Index menyentuh <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>! 
+                              Walaupun suhu AC aslinya hanya <span className="text-amber-400 font-bold">{latest.temp.toFixed(1)}°C</span>, tingginya kelembapan di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span> justru menjebak hawa panas di udara. Akibatnya, tubuh kita kesulitan membuang keringat, sehingga udara malah terasa <span className="text-red-400 font-bold">{(latest.heatIndex - latest.temp).toFixed(1)}°C jauh lebih menyengat</span> daripada suhu aslinya.
                             </>
                           ) : (
                             <>
-                              Saat ini ruangan terpantau <span className="text-emerald-400 font-bold">Nyaman</span> dengan Heat Index <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
-                              Suhu asli ruangan tercatat <span className="text-emerald-400 font-bold">{latest.temp.toFixed(1)}°C</span> dengan tingkat kelembapan ideal di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span>. Udara mengalir dengan baik sehingga tidak ada panas berlebih yang terperangkap.
+                              Aman terkendali! Ruangan ini terasa <span className="text-emerald-400 font-bold">Sangat Nyaman</span> dengan Heat Index di <span className="text-white font-bold">{latest.heatIndex.toFixed(1)}°C</span>. 
+                              Suhu aslinya berada di <span className="text-emerald-400 font-bold">{latest.temp.toFixed(1)}°C</span>, didukung dengan sirkulasi kelembapan yang ideal di angka <span className="text-cyan-400 font-bold">{latest.humidity.toFixed(0)}%</span>. Udaranya mengalir bebas, sehingga tidak ada hawa pengap yang tertahan di dalam ruangan.
                             </>
                           )}
                         </p>
@@ -516,7 +516,7 @@ export default function AnalyticsPage() {
                               <p className={`text-2xl font-black ${tempEffect >= 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                                 {tempEffect > 0 ? '+' : ''}{tempEffect.toFixed(1)}°C
                               </p>
-                              <span className="text-xs text-white/30">dari suhu normal</span>
+                              <span className="text-xs text-white/30">penyumbang hawa panas</span>
                             </div>
                           </div>
                         </div>
@@ -533,7 +533,7 @@ export default function AnalyticsPage() {
                               <p className={`text-2xl font-black ${humEffect >= 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                                 {humEffect > 0 ? '+' : ''}{humEffect.toFixed(1)}°C
                               </p>
-                              <span className="text-xs text-white/30">dari hawa gerah</span>
+                              <span className="text-xs text-white/30">penyumbang rasa pengap</span>
                             </div>
                           </div>
                         </div>
