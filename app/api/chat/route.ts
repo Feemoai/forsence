@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       'X-Title':        'FORSENCE IoT Dashboard',
     },
     body: JSON.stringify({
-      model:    'openai/gpt-oss-120b:free',
+      model:    'tencent/hy3:free',
       messages: [
         { role: 'system', content: currentPrompt },
         ...messages,
